@@ -1,13 +1,16 @@
+/* Estilo da pagina inicial */
 #wave-background
 {
-  
+  background: rgb(0,0,8);
+  background: linear-gradient(337deg, rgba(0,0,8,1) 0%, rgba(131,8,171,1) 40%, rgba(0,9   ,164,1) 100%, rgba(31,183,193,1) 100%);
+  margin: 0;
 }
 
 #container
 {
   width: 70%;
 	height: 70%;
-	position: absolute;
+	position: relative;
 	top:0;
 	bottom: 0;
 	left: 0;
@@ -20,6 +23,7 @@
 	padding: 10px;
 	column-gap: 20px;
 	row-gap: 20px;
+	position: absolute;
 }
 .menu-item
 {
@@ -35,7 +39,7 @@
   background-color: white;
   z-index: 0;
   border-radius: 25px;
-  box-shadow: 5px 5px 10px #E8E8E8;
+  box-shadow: 3px 3px 10px #9C9C9C;
 }
 .menu-item-icon
 {
@@ -66,3 +70,4 @@
   z-index: 1;
   }
 }
+/* fim do estilo da pagina inicial */
