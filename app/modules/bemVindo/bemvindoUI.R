@@ -8,25 +8,25 @@ bemVindoUI = function() {
     HTML("
     <div id = 'wave-background'>
       <div id = 'container'>
-            <div class = 'menu-item'>
+            <div class = 'menu-item' id = 'opcao-clima'>
               <div class = 'menu-item-icon'>
                 <img src='icons//clima.png' alt='Icone clima'>
               </div>
               <h7>Clima</h7>
             </div>
-            <div class = 'menu-item'>
+            <div class = 'menu-item' id = 'opcao-doencas'>
               <div class = 'menu-item-icon'>
                 <img src='icons//doencas.png' alt='Icone clima'>
               </div>
               <h7>Doenças</h7>
             </div>
-            <div class = 'menu-item'>
+            <div class = 'menu-item' id = 'opcao-experimentos'>
               <div class = 'menu-item-icon'>
                 <img src='icons//experimentos.png' alt='Icone clima'>
               </div>
               <h7>Experimentos</h7>
             </div>
-            <div class = 'menu-item'>
+            <div class = 'menu-item' id = 'opcao-agricultor'>
               <div class = 'menu-item-icon'>
                 <img src='icons//planta.png' alt='Icone clima'>
               </div>

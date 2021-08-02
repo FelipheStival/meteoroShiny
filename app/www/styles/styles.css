@@ -35,11 +35,10 @@
   align-items: center;
   font-size: 4vh;
   border: 1px solid #E8E8E8;
-  filter: grayscale(100%); 
-  background-color: white;
   z-index: 0;
   border-radius: 25px;
-  box-shadow: 3px 3px 10px #9C9C9C;
+  box-shadow: 3px 3px 10px #DCDCDC;
+  color: white;
 }
 .menu-item-icon
 {
@@ -58,14 +57,29 @@
   animation: animacaoBotao 2s forwards;
 }
 
+#opcao-clima
+{
+  background-color: #40E0D0;
+}
+#opcao-doencas
+{
+  background-color: #FF6A6A;
+}
+#opcao-experimentos
+{
+  background-color: #FF8247;
+}
+#opcao-agricultor
+{
+  background-color: #3CB371;
+}
+
 @keyframes animacaoBotao {
   0%{ 
-  filter: grayscale(100%);
   transform: scale(1);
   z-index: 1;
   }
   100% { 
-  filter: grayscale(0%); 
   transform: scale(1.1);
   z-index: 1;
   }
