@@ -1,7 +1,7 @@
 # Registrando rotas.
 router = make_router(
   route("/",bemVindoUI()),
-  route('clima',fluidPage(HTML("<h1>teste</h1>")))
+  route("clima",climaUI)
 )
 
 # Pagina reponsavel pelo redirecionamento.

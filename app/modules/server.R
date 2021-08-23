@@ -1,11 +1,13 @@
-#==================================================================
-# Global Server
-#
-# @input objeto do tipo reactive com os inputs do usuario
-# @output objeto do tipo reactive com os outputs do usuario
-# @session dados relacionacdos a sessao
-#==================================================================
-
+# Global server
 server = shinyServer(function(input, output, session) {
+  
+  # Router
   router$server(input, output, session)
+  
+  # Conexao com banco de dados
+  
+  
+  # clima Service
+  mapaServer(input,output,session)
+  
 })

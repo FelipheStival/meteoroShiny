@@ -9,6 +9,17 @@ app.LoadPackages = function()
     require(shiny) 
     require(shinydashboard)
     require(shiny.router)
+    require(leaflet)
+    require(shinycssloaders)
+    require(RJDBC)
+    require(seas)
+    require(ggplot2)
+    require(reshape2)
+    require(dplyr)
+    require(lubridate)
+    require(stringr)
+    require(ggrepel)
+    require(ggthemes)
     
     #==============================================#
 }
