@@ -4,14 +4,27 @@
 create.pagina.grafico.Temperatura = function() {
   #criando janela
   tabItem(tabName = "AnomaliaTemperaturaPlot",
-          box(width = 12,
+          box(width = 3,
+              selectInput(
+                inputId = "secoUmidoGrupoDias",
+                label = "Selecione o grupo de dias:",
+                choices = c(
+                  "Outono" = "Outubro/Maio",
+                  "Inverno" = "abril a junho",
+                  "Primavera" = "outubro a dezembro",
+                  "Verão" = "janeiro a março")
+              )
+             ),
+          box(width = 9,
               withSpinner(
                 plotOutput(
                   "AnomaliaTemperaturaPlot",
                   width = "100%",
                   height = "85vh"
                 )
-              )))
+              )
+            )
+          )
 }
 
 #==================================================================
@@ -132,13 +145,15 @@ create.pagina.grafico.basico = function() {
               inputId = "boxplotVariavel",
               label = "Selecione a variavel:",
               choices = c(
-                "Temperatura mínima do ar(*C)" = "tmax",
-                "Temperatura máxima do ar(*C)" = "tmin",
-                "Umidade Relativa mínima do ar(%)" = "minimum_relative_air_humidity",
-                "Umidade Relativa máxima do ar(%)" = "maximum_relative_air_humidity",
-                "Velocidade do Vento(%)" = "vento",
-                "Radiação solar global(MJ/m2)" = "rad",
-                "Precipitação Pluvial(mm)" = "precip"
+                "Temperatura mínima do ar(ºC)" = "tmin",
+                "Temperatura máxima do ar(ºC)" = "tmax",
+                "Temperatura média (ºC)" = "tmed",
+                "Umidade relativa do ar média (%)" = "urmed",
+                "Velocidade média do vento (m/s)" = "vento",
+                "Velocidade máxima do vento (m/s)" = "vtmax",
+                "Radiação solar global (MJ/m2.dia)" = "rad",
+                "precipitação (mm)" = "precip",
+                "temperatura do solo (ºC)" = "tsolo"
               )
             ),
             selectInput(
@@ -173,13 +188,15 @@ create.pagina.grafico.matriz = function() {
               inputId = "variavelSelect",
               label = "Selecione a variavel:",
               choices = c(
-                "Temperatura mínima do ar(*C)" = "tmax",
-                "Temperatura máxima do ar(*C)" = "tmin",
-                "Umidade Relativa mínima do ar(%)" = "minimum_relative_air_humidity",
-                "Umidade Relativa máxima do ar(%)" = "maximum_relative_air_humidity",
-                "Velocidade do Vento(%)" = "vento",
-                "Radiação solar global(MJ/m2)" = "rad",
-                "Precipitação Pluvial(mm)" = "precip"
+                "Temperatura mínima do ar(ºC)" = "tmin",
+                "Temperatura máxima do ar(ºC)" = "tmax",
+                "Temperatura média (ºC)" = "tmed",
+                "Umidade relativa do ar média (%)" = "urmed",
+                "Velocidade média do vento (m/s)" = "vento",
+                "Velocidade máxima do vento (m/s)" = "vtmax",
+                "Radiação solar global (MJ/m2.dia)" = "rad",
+                "precipitação (mm)" = "precip",
+                "temperatura do solo (ºC)" = "tsolo"
               )
             ),
             selectInput(

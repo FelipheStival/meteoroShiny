@@ -45,10 +45,10 @@ mapaServer = function(input, output, session) {
   
   # Saida tabela
   output$tabelaDados = renderDataTable({
-    dadosClimaticos()
+    provider.renomear.colunas(dadosClimaticos())
   },options = list(
     lengthMenu = c(5, 10, 15, 20),
-    pageLength = 10,
+    pageLength = 15,
     scrollX = TRUE
   ))
   
@@ -91,7 +91,7 @@ mapaServer = function(input, output, session) {
   # Saida grafica mapa
   output$mapaEstacoes = renderLeaflet({
     mapaChart(
-      mapa.provider.dadosMapa(input$estadoInput)
+      mapa.provider.dadosMapa()
     )
   })
   

@@ -64,19 +64,16 @@ graficos.provider.grafico.cor = function(variavelSelect) {
     "tmax" = {
       cor = "OrangeRed"
     },
-    "minimum_precipitation" = {
+    "vtmax" = {
       cor = "blue"
     },
-    "maximum_precipitation" = {
+    "vento" = {
       cor = "DodgerBlue"
     },
-    "minimum_relative_air_humidity" = {
+    "urmed" = {
       cor = "DarkCyan"
     },
-    "maximum_relative_air_humidity" = {
-      cor = "DarkCyan"
-    },
-    "wind_speed" = {
+    "tsolo" = {
       cor = "DarkGray"
     },
     "rad" = {
@@ -84,6 +81,9 @@ graficos.provider.grafico.cor = function(variavelSelect) {
     },
     "precip" = {
       cor = "LightSteelBlue"
+    },
+    "tmed" = {
+      cor = "SandyBrown"
     }
   )
   return(cor)
@@ -253,18 +253,35 @@ graficos.provider.rangeDate = function(minData, maxData) {
 #==================================================================
 # Metodo para obter dados para desenhar o mapa
 #==================================================================
-mapa.provider.dadosMapa = function(estado) {
-  statement = sprintf(
-  "SELECT cidades.id,
+mapa.provider.dadosMapa = function() {
+  statement = "SELECT cidades.id,
   cidades.nome as municipio,
 	cidades.latitude as latitude,
 	cidades.longitude as longitude,
 	cidades.id_estado
 	FROM public.cidades
-	JOIN estados ON cidades.id_estado = estados.id
-	WHERE estados.nome = '%s'",
-    estado
-  )
+	JOIN estados ON cidades.id_estado = estados.id"
   dados = banco.provider.executeQuery(statement)
   return(dados)
 }
+#==================================================================
+# Metodo para renomear as colunas
+#==================================================================
+provider.renomear.colunas = function(dados){
+  names(dados) = c(
+    "Data",
+    "Temperatura máxima (ºC)",
+    "Temperatura mínima (ºC)",
+    "Temperatura média (ºC)",
+    "Umidade relativa do ar média (%)",
+    "Velocidade média do vento (m/s)",
+    "Velocidade máxima do vento (m/s)",
+    "Radiação solar global (MJ/m2.dia)",
+    "Precipitação (mm)",
+    "Temperatura do solo (ºC) ",
+    "Estado",
+    "Cidade"
+  )
+  return(dados)
+}
+

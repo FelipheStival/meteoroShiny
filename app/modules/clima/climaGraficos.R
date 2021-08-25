@@ -75,6 +75,7 @@ graficos.GraficoMatriz = function(dados, Municipio, Coluna, cor, intervalo)
 
 grafico.precipitacao = function(dados, Municipio, Grupodias, Coluna)
 {
+  
   Grupodias = ifelse(!is.na(as.numeric(Grupodias)), as.numeric(Grupodias), "mon")
   dados[[Coluna]] = as.numeric(dados[[Coluna]])
   
@@ -174,86 +175,11 @@ grafico.diaSecoUmido = function(tabela,
        main = titulo)
   
 }
-
-#======================================================================
-# Grafico periodo climatico
-#======================================================================
-graficos.periodoClimatico = function(dados, Municipio, Coluna) {
-  dados$data = as.Date(dados$data)
-  dados = dados[!is.na(dados$precip), ]
-  dados[[Coluna]] = as.numeric(dados[[Coluna]])
-  
-  R.prec = mean(dados[[Coluna]], na.rm = T)
-  dados$R_diff = NA
-  
-  for (linha in 1:dim(dados)[1]) {
-    if (linha == 1) {
-      dados$R_diff[linha] = dados[[Coluna]][linha] - R.prec
-    } else{
-      dados$R_diff[linha] = (dados[[Coluna]][linha] - R.prec) + dados$R_diff[linha -
-                                                                               1]
-    }
-  }
-  
-  dados$ano = format(dados$data, "%Y")
-  dados$mes = format(dados$data, "%m")
-  
-  resumo = dcast(dados, ano ~ mes, value.var = "R_diff", fun = mean)
-  
-  prec_media = apply(resumo[,-1], 2, mean, na.rm = T)
-  prec_media = data.frame(mes = names(prec_media), media = prec_media)
-  
-  inicioChuva = prec_media$mes[prec_media$media == min(prec_media$media)]
-  fimChuva = prec_media$mes[prec_media$media == max(prec_media$media)]
-  
-  inicioChuva = as.numeric(as.character(inicioChuva))
-  fimChuva = as.numeric(as.character(fimChuva))
-  
-  resumo = melt(
-    resumo,
-    id.vars = "ano",
-    variable.name = "mes",
-    value.name = "R_diff"
-  )
-  resumo$status = resumo$mes %in% c(inicioChuva, fimChuva)
-  resumo$mes = as.numeric(as.character(resumo$mes))
-  
-  resumo$periodo = !(resumo$mes %in% fimChuva:inicioChuva)
-  resumo$periodo[resumo$mes == fimChuva] = "Inicio / Final das chuvas"
-  resumo$periodo[resumo$mes == inicioChuva] = "Inicio / Final das chuvas"
-  
-  breaks = c("TRUE", "FALSE", "Inicio / Final das chuvas")
-  labels = c("Periodo chuvoso", "Periodo seco", "Inicio / Final das chuvas")
-  titulo = sprintf("Periodos climaticos da estacao %s", Municipio)
-  col = c("#ff9999", "gray", "#56B4E9")
-  
-  ggplot(resumo, aes(factor(mes), R_diff)) + geom_boxplot(aes(fill = periodo)) +
-    scale_fill_manual(breaks = breaks,
-                      labels = labels,
-                      values = col) +
-    labs(title = titulo, x = "Mes", y = "Anomalia da precipitação pluvial media acumulada por dia (mm)") + theme_bw() +
-    scale_x_discrete(
-      labels = c(
-        "Janeiro",
-        "Feveiro",
-        "Marco",
-        "Abril",
-        "Maio",
-        "Junho",
-        "Julho",
-        "Agosto",
-        "Setembro",
-        "Outobro",
-        "Novembro",
-        'Dezembro'
-      )
-    )
-}
-
 #======================================================================
 # Grafico anomalia temperatura
 #======================================================================
 grafico.anomalia.temperatura = function(data_inv, municipio) {
+  
   #criando grafico
   data_inv_p = mutate(data_inv, pr_anom = pr_anom * -1)
   bglab = data.frame(
@@ -459,15 +385,14 @@ grafico.GraficoAnomalia = function(cidade,
     colour = "NA",
     show.legend = FALSE
   )
+  
   g1 = g1 + geom_hline(yintercept = 0) + scale_fill_manual(values = c("#99000d", "#034e7b")) +
     scale_y_continuous(
       as.character("Anomalia da precipitacao pluvial em (%)"),
-      breaks = seq(-100, 1200, 100),
+      breaks = seq(-100, 1200, 20),
       expand = c(0, 5)
     )
-  g1 = g1 + labs(x = "", title = as.character(sprintf("Anomalia precipitacao em %s", cidade))) + theme(text = element_text(size =
-                                                                                                                             16))
-  
+  g1 = g1 + labs(x = "", title = as.character(sprintf("Anomalia precipitacao em %s", cidade))) + theme(text = element_text(size = 16))
   
   plot(g1)
 }
@@ -518,4 +443,79 @@ mapaChart = function(coords) {
     )
   
   return(mapaChart)
+}
+
+#======================================================================
+# Grafico periodo climatico
+#======================================================================
+graficos.periodoClimatico = function(dados, Municipio, Coluna) {
+  dados$data = as.Date(dados$data)
+  dados = dados[!is.na(dados$precip), ]
+  dados[[Coluna]] = as.numeric(dados[[Coluna]])
+  
+  R.prec = mean(dados[[Coluna]], na.rm = T)
+  dados$R_diff = NA
+  
+  for (linha in 1:dim(dados)[1]) {
+    if (linha == 1) {
+      dados$R_diff[linha] = dados[[Coluna]][linha] - R.prec
+    } else{
+      dados$R_diff[linha] = (dados[[Coluna]][linha] - R.prec) + dados$R_diff[linha -
+                                                                               1]
+    }
+  }
+  
+  dados$ano = format(dados$data, "%Y")
+  dados$mes = format(dados$data, "%m")
+  
+  resumo = dcast(dados, ano ~ mes, value.var = "R_diff", fun = mean)
+  
+  prec_media = apply(resumo[,-1], 2, mean, na.rm = T)
+  prec_media = data.frame(mes = names(prec_media), media = prec_media)
+  
+  inicioChuva = prec_media$mes[prec_media$media == min(prec_media$media)]
+  fimChuva = prec_media$mes[prec_media$media == max(prec_media$media)]
+  
+  inicioChuva = as.numeric(as.character(inicioChuva))
+  fimChuva = as.numeric(as.character(fimChuva))
+  
+  resumo = melt(
+    resumo,
+    id.vars = "ano",
+    variable.name = "mes",
+    value.name = "R_diff"
+  )
+  resumo$status = resumo$mes %in% c(inicioChuva, fimChuva)
+  resumo$mes = as.numeric(as.character(resumo$mes))
+  
+  resumo$periodo = !(resumo$mes %in% fimChuva:inicioChuva)
+  resumo$periodo[resumo$mes == fimChuva] = "Inicio / Final das chuvas"
+  resumo$periodo[resumo$mes == inicioChuva] = "Inicio / Final das chuvas"
+  
+  breaks = c("TRUE", "FALSE", "Inicio / Final das chuvas")
+  labels = c("Periodo chuvoso", "Periodo seco", "Inicio / Final das chuvas")
+  titulo = sprintf("Periodos climaticos da estacao %s", Municipio)
+  col = c("#ff9999", "gray", "#56B4E9")
+  
+  ggplot(resumo, aes(factor(mes), R_diff)) + geom_boxplot(aes(fill = periodo)) +
+    scale_fill_manual(breaks = breaks,
+                      labels = labels,
+                      values = col) +
+    labs(title = titulo, x = "Mes", y = "Anomalia da precipitação pluvial media acumulada por dia (mm)") + theme_bw() +
+    scale_x_discrete(
+      labels = c(
+        "Janeiro",
+        "Feveiro",
+        "Marco",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outobro",
+        "Novembro",
+        'Dezembro'
+      )
+    )
 }

@@ -1,9 +1,6 @@
 # Metodo para abrir a conexao com o banco de dados
 banco.provider.openConnection = function() {
   
-  conn = dbConnect(RSQLite::SQLite(),
-  "inmet.db")
-  
   # configurando driver
   driver = JDBC("org.postgresql.Driver",
                 "driver//postgresql-42.2.22.jar")
