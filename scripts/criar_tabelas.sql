@@ -38,17 +38,17 @@ CREATE TABLE public.cidades
 CREATE TABLE public.clima
 (
     id bigserial NOT NULL,
-    data date NOT NULL,
-    Tmax numeric NOT NULL,
-    Tmin numeric NOT NULL,
-    Tmed numeric NOT NULL,
-    Urmed numeric NOT NULL,
-    Vento numeric NOT NULL,
-    Vtmax numeric NOT NULL,
-    Rad numeric NOT NULL,
-    Precip numeric NOT NULL,
-    Tsolo numeric NOT NULL,
-    id_cidade bigint NOT NULL,
+    data date,
+    Tmax numeric,
+    Tmin numeric,
+    Tmed numeric,
+    Urmed numeric,
+    Vento numeric,
+    Vtmax numeric,
+    Rad numeric,
+    Precip numeric,
+    Tsolo numeric,
+    id_cidade bigint,
     PRIMARY KEY (id),
     CONSTRAINT "FK_clima_cidades" FOREIGN KEY (id_cidade)
         REFERENCES public.cidades (id) MATCH SIMPLE
