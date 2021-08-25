@@ -21,6 +21,8 @@ CREATE TABLE public.cidades
 (
     id bigserial NOT NULL,
     nome text NOT NULL,
+    latitude double precision NOT NULL,
+    longitude double precision NOT NULL,
     id_estado bigint NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT "FK_cidades_estados" FOREIGN KEY (id_estado)
@@ -37,15 +39,15 @@ CREATE TABLE public.clima
 (
     id bigserial NOT NULL,
     data date NOT NULL,
-    "Tmax" numeric NOT NULL,
-    "Tmin" numeric NOT NULL,
-    "Tmed" numeric NOT NULL,
-    "Urmed" numeric NOT NULL,
-    "Vento" numeric NOT NULL,
-    "Vtmax" numeric NOT NULL,
-    "Rad" numeric NOT NULL,
-    "Precip" numeric NOT NULL,
-    "Tsolo" numeric NOT NULL,
+    Tmax numeric NOT NULL,
+    Tmin numeric NOT NULL,
+    Tmed numeric NOT NULL,
+    Urmed numeric NOT NULL,
+    Vento numeric NOT NULL,
+    Vtmax numeric NOT NULL,
+    Rad numeric NOT NULL,
+    Precip numeric NOT NULL,
+    Tsolo numeric NOT NULL,
     id_cidade bigint NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT "FK_clima_cidades" FOREIGN KEY (id_cidade)
