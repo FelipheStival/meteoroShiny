@@ -12,19 +12,19 @@ INSERT INTO public.estados(nome) VALUES ('PR'),('SP');
 /*----------------------------------------
 * dados tabela cidades
 */----------------------------------------
-INSERT INTO cidades(nome,id_estado) 
+INSERT INTO cidades(nome,latitude,longitude,id_estado) 
 VALUES 
-('Itaberá',2),
-('Coronel Macedo',2),
-('Arapoti',1),
-('Tibagi',1),
-('Castro',1),
-('Ponta Grossa',1);
+('Itaberá',-24.069,-49.1553,2),
+('Coronel Macedo',-23.6432416167963,-49.2822834849358,2),
+('Arapoti',-24.193836,-49.876342,1),
+('Tibagi',-24.52523,-50.36745,1),
+('Castro',-24.785466,-49.899109,1),
+('Ponta Grossa',-25.01328,-50.1520096,1);
 
 /*----------------------------------------
 * Dados tabela clima
 */----------------------------------------
-INSERT INTO clima(Data,"Tmax","Tmin","Tmed","Urmed","Vento","Vtmax","Rad","Precip","Tsolo","id_cidade") 
+INSERT INTO clima(Data,Tmax,Tmin,Tmed,Urmed,Vento,Vtmax,Rad,Precip,Tsolo,id_cidade) 
 VALUES 
 ('01/09/2006',20,13.7,15.6,93.6,-999,-999,-999,51.4,-999,1),
 ('02/09/2006',22.9,14.1,17.9,85.1,-999,-999,-999,21.8,-999,1),
