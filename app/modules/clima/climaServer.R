@@ -33,13 +33,14 @@ mapaServer = function(input, output, session) {
   # Reative para conseguir os dados climaticos
   dadosClimaticos = reactive({
     dados = provider.obterClimaticos(input$cidadeInput,
-                                     input$periodoInput)
+                                     input$periodoInput
+                                     )
   })
   
   
   # Reative para conseguir os dados anomalia
   dadosAnomaliaTemperatura = reactive({
-    dados = grafico.provider.dadosPrec(dadosClimaticos())
+    dados = grafico.provider.dadosPrec(dadosClimaticos(),provider.meses.analises(input$safraGrupoInput))
     return(dados)
   })
   
@@ -172,8 +173,7 @@ mapaServer = function(input, output, session) {
   output$AnomaliaTemperaturaPlot = renderPlot({
       grafico.anomalia.temperatura(
         data_inv = dadosAnomaliaTemperatura(),
-        municipio = input$cidadeInput
-      ) 
+        municipio = input$cidadeInput)
   })
   
   # Saida grafica anomalia precipitacao
@@ -184,7 +184,6 @@ mapaServer = function(input, output, session) {
         coluna = "rain",
         dadosClimaticos(),
         ylab = "precipitacao",
-        Escala = 100
-      ) 
+        Escala = 100)
   })
 }

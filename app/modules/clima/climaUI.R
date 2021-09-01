@@ -6,15 +6,17 @@ create.pagina.grafico.Temperatura = function() {
   tabItem(tabName = "AnomaliaTemperaturaPlot",
           box(width = 3,
               selectInput(
-                inputId = "secoUmidoGrupoDias",
+                inputId = "safraGrupoInput",
                 label = "Selecione o grupo de dias:",
                 choices = c(
-                  "Outono" = "Outubro/Maio",
-                  "Inverno" = "abril a junho",
-                  "Primavera" = "outubro a dezembro",
-                  "Verão" = "janeiro a março")
-              )
+                  "Safra",
+                  "Outono",
+                  "Inverno",
+                  "Primavera",
+                  "Verao"),
+                selected = "Safra"
              ),
+          ),
           box(width = 9,
               withSpinner(
                 plotOutput(

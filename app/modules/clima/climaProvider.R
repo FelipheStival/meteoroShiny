@@ -119,7 +119,13 @@ graficos.provider.grafico.legenda = function(variavelSelect) {
   return(legenda)
 }
 
-grafico.provider.dadosPrec = function(dados) {
+grafico.provider.dadosPrec = function(dados, meses) {
+  
+  # Calculando meses
+  dados$data = ymd(dados$data)
+  dados$meses = format(dados$data,"%m")
+  dados = dados[dados$meses %in% meses,]
+  
   #Calculando precipitacao media
   dados$ta = (dados$tmax + dados$tmin) / 2
   
@@ -283,5 +289,30 @@ provider.renomear.colunas = function(dados){
     "Cidade"
   )
   return(dados)
+}
+#==================================================================
+# Metodo para obter os meses do input anomalia
+#==================================================================
+provider.meses.analises = function(inputAnomalia){
+  meses = NULL
+  switch (
+    inputAnomalia,
+    "Safra" = {
+      meses = c('10','11','12','01','02','03','05')
+    },
+    "Outono" = {
+      meses = c('04','05','06','07')
+    },
+    "Inverno" = {
+      meses = c('07','08','09')
+    },
+    "Primavera" = {
+      meses = c('10','11','12')
+    },
+    "Verao" = {
+      meses = c('01','02','03')
+    }
+  )
+  return(meses)
 }
 

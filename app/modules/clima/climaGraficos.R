@@ -178,8 +178,7 @@ grafico.diaSecoUmido = function(tabela,
 #======================================================================
 # Grafico anomalia temperatura
 #======================================================================
-grafico.anomalia.temperatura = function(data_inv, municipio) {
-  
+grafico.anomalia.temperatura = function(data_inv, municipio, meses) {
   #criando grafico
   data_inv_p = mutate(data_inv, pr_anom = pr_anom * -1)
   bglab = data.frame(
@@ -283,9 +282,9 @@ grafico.GraficoAnomalia = function(cidade,
                                    coluna,
                                    dados_tabela_principal,
                                    ylab,
-                                   Escala)
+                                   Escala,
+                                   meses)
 {
-  
   dados = dados_tabela_principal %>%
     select(data,cidade_nome, precip) %>%
     filter(cidade_nome == cidade) %>%
