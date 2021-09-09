@@ -3,6 +3,10 @@
 * Author: Feliphe Stival Valadares Guiliani
 * Versao: 0.1
 */------------------------------------------------
+
+/*------------------------------------
+ Tabela estados
+*/------------------------------------
 CREATE TABLE public.estados
 (
     id bigserial NOT NULL,
@@ -10,6 +14,9 @@ CREATE TABLE public.estados
     PRIMARY KEY (id)
 );
 
+/*------------------------------------
+ Tabela cidades
+*/------------------------------------
 CREATE TABLE public.cidades
 (
     id bigserial NOT NULL,
@@ -23,6 +30,9 @@ CREATE TABLE public.cidades
         NOT VALID
 );
 
+/*------------------------------------
+ Tabela locais
+*/------------------------------------
 CREATE TABLE public.locais
 (
     id bigserial NOT NULL,
@@ -36,6 +46,9 @@ CREATE TABLE public.locais
         NOT VALID
 );
 
+/*------------------------------------
+ Tabela tipo de graos
+*/------------------------------------
 CREATE TABLE public.tipos_de_graos
 (
     id bigserial NOT NULL,
@@ -43,6 +56,9 @@ CREATE TABLE public.tipos_de_graos
     PRIMARY KEY (id)
 );
 
+/*------------------------------------
+ Tabela genotipos
+*/------------------------------------
 CREATE TABLE public.genotipos
 (
     id bigserial NOT NULL,
@@ -56,6 +72,9 @@ CREATE TABLE public.genotipos
         NOT VALID
 );
 
+/*------------------------------------
+ Tabela ensaios
+*/------------------------------------
 CREATE TABLE public.ensaios(
    id                                                       bigserial NOT NULL
   ,ID_ensaio                                                TEXT NOT NULL
@@ -141,4 +160,6 @@ CREATE TABLE public.ensaios(
   ,CICLO_DAE                                                NUMERIC
   ,id_local                                                 BIGINT  NOT NULL
   ,id_genotipo                                              BIGINT  NOT NULL
+  ,FOREIGN KEY(id_local) REFERENCES locais (id)
+  ,FOREIGN KEY(id_genotipo) REFERENCES genotipos  (id)
 );
