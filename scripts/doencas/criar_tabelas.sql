@@ -160,6 +160,14 @@ CREATE TABLE public.ensaios(
   ,CICLO_DAE                                                NUMERIC
   ,id_local                                                 BIGINT  NOT NULL
   ,id_genotipo                                              BIGINT  NOT NULL
-  ,FOREIGN KEY(id_local) REFERENCES locais (id)
-  ,FOREIGN KEY(id_genotipo) REFERENCES genotipos  (id)
+  ,CONSTRAINT "FK_ENSAIOS_LOCAL" FOREIGN KEY (id_local)
+        REFERENCES public.locais (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+  ,CONSTRAINT "FK_ENSAIOS_GENOTIPO" FOREIGN KEY (id_genotipo)
+        REFERENCES public.genotipos (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
 );
