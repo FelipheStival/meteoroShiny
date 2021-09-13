@@ -19,8 +19,8 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "safraInputDoencas",
-      choices = safras,
-      selected = safras[1]
+      choices = sort(safras),
+      selected = sort(safras)[1]
     ) 
   })
   
