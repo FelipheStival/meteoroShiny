@@ -10,4 +10,7 @@ server = shinyServer(function(input, output, session) {
   # clima Service
   mapaServer(input,output,session)
   
+  # Doenca Service
+  doencaServer(input,output,session)
+  
 })

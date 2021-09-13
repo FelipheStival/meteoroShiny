@@ -12,7 +12,7 @@ menuItem.onclick = function(e){
     window.location.href = href + "clima"
     break;
   case 'Doenças':
-    window.location.href = "/doencas/";
+    window.location.href = href + "doencas"
     break;
   case 'Experimentos':
     window.location.href = "/experimentos/";

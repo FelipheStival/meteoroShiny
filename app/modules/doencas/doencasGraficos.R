@@ -1,0 +1,16 @@
+#==============================================#
+# Grafico "Contagem"
+grafico.diagnostico_Contagem = function(tabela) {
+  validate.vx = is.na(tabela$h2) | is.infinite(tabela$h2)
+  validate.vy = is.na(tabela$rgg) | is.infinite(tabela$rgg)
+  
+  row.index = which(!validate.vx & !validate.vy)
+  col.index = which(names(tabela) %in% c("h2", "rgg", "Diagnostico"))
+  tabela = tabela[row.index,col.index]
+  
+  color.palette = c("#7cb342", "#e53935")
+  scatterD3(data = tabela, x = h2, y = rgg, col_var = Diagnostico, colors = color.palette,
+            xlab = "Herdabilidade", ylab = "Correlacao genetica entre valor fenotipo e genotipo", 
+            menu = F, xlim = c(0, 1), ylim = c(0, 1))
+}
+#==============================================#

@@ -20,6 +20,8 @@ app.LoadPackages = function()
     require(stringr)
     require(ggrepel)
     require(ggthemes)
+    require(scatterD3)
+    require(lme4)
     
     #==============================================#
 }
