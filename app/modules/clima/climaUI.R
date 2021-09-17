@@ -254,7 +254,8 @@ create.side.bar = function() {
     menuItem(
       text = "Mapa",
       tabName = "mapaTab",
-      icon = icon("map")
+      icon = icon("map"),
+      selected = T
     ),
     menuItem(
       text = "Tabela",
