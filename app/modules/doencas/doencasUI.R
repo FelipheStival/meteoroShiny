@@ -1,4 +1,15 @@
 #==============================================
+# Aba "Dados Perdidos"
+#==============================================
+tabItem.dadosPerdidos = function() {
+  
+  tabItem(tabName = "dados-perdidos", 
+          plotOutput("grafico_dadosPerdidos_Estatistica",width = "100%", height = "90vh") %>% withSpinner(color="#0dc5c1")
+  )
+}
+
+
+#==============================================
 # Aba "Diagnostico"
 #==============================================
 tabItem.diagnostico = function() {
@@ -17,12 +28,10 @@ doencas.sidebar = function() {
   sidebarMenu(
     menuItem(
       "Gráficos",
+      tabName = "dados-perdidos",
       icon = icon("line-chart"),
-      menuSubItem(
-        "Diagnostico",
-        tabName = "diagnostico",
-        icon = icon("line-chart")
-      )
+      menuSubItem("Dados Perdidos", tabName = "dados-perdidos", icon = icon("line-chart"), selected = T),
+      menuSubItem("Diagnostico", tabName = "diagnostico", icon = icon("line-chart"))
     ),
     menuItem(
       text = "Variaveis",
@@ -46,21 +55,28 @@ doencas.sidebar = function() {
         inputId = "irrigacaoInputDoencas",
         label = "irrigacao:",
         choices = c(
-          "Nao" = "f",
-          "Sim" = "t"
-        )
+          "Sim" = "t",
+          "Nao" = "f"
+        ),
+        selected = "Sim"
       ),
       selectInput(
         inputId = "fungicidaInputDoencas",
         label = "Selecione a fungicida: ",
         choices = c(
-          "Nao" = "f",
-          "Sim" = "t"
-        )
+          "Sim" = "t",
+          "Nao" = "f"
+        ),
+        selected = "Sim"
       ),
       selectInput(
         inputId = "tipodegraoInputDoencas",
         label = "Selecione o tipo de grao: ",
+        choices = NULL
+      ),
+      selectInput(
+        inputId = "epocaInputDoencas",
+        label = "Selecione a epoca: ",
         choices = NULL
       )
     )
@@ -73,7 +89,7 @@ doencasUI = div(id = "clima-container",
                 dashboardPage(
                   #========================header=========================
                   
-                  dashboardHeader(title =  "Doencas"),
+                  dashboardHeader(title =  "Experimentos"),
                   
                   #=======================================================
                   
@@ -85,7 +101,10 @@ doencasUI = div(id = "clima-container",
                   
                   #=======================body=============================
                   dashboardBody(
-                    tabItem.diagnostico()
+                    tabItems(
+                      tabItem.diagnostico(),
+                      tabItem.dadosPerdidos()
+                    )
                   )
                   #========================================================
                 ))

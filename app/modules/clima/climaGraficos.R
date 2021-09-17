@@ -266,7 +266,7 @@ grafico.anomalia.temperatura = function(data_inv, municipio, meses) {
     scale_fill_manual(values = c("black", "white")) +
     scale_colour_manual(values = rev(c("black", "white"))) +
     labs(
-      title = sprintf("Anomalias Aguas (Outubro a Marco) em %s", municipio),
+      title = sprintf("Anomalias Aguas %s em %s",meses, municipio),
       caption = "Data: Embrapa\ periodo 1980-2020"
     ) +
     theme_bw()
@@ -282,9 +282,9 @@ grafico.GraficoAnomalia = function(cidade,
                                    coluna,
                                    dados_tabela_principal,
                                    ylab,
-                                   Escala,
-                                   meses)
+                                   Escala)
 {
+  
   dados = dados_tabela_principal %>%
     select(data,cidade_nome, precip) %>%
     filter(cidade_nome == cidade) %>%

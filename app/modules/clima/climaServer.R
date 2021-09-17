@@ -173,7 +173,8 @@ mapaServer = function(input, output, session) {
   output$AnomaliaTemperaturaPlot = renderPlot({
       grafico.anomalia.temperatura(
         data_inv = dadosAnomaliaTemperatura(),
-        municipio = input$cidadeInput)
+        municipio = input$cidadeInput,
+        meses = input$safraGrupoInput)
   })
   
   # Saida grafica anomalia precipitacao

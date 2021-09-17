@@ -2,7 +2,7 @@
 router = make_router(
   route("/", bemVindoUI()),
   route("clima", climaUI),
-  route("doencas",doencasUI)
+  route("experimentos",doencasUI)
 )
 
 # Pagina reponsavel pelo redirecionamento.

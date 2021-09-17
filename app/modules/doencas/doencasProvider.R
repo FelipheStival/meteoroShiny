@@ -1,4 +1,6 @@
+#================================================
 # Metodo para obter os dados dos genotipos
+#================================================
 doencas.provider.dados = function() {
   statement = "SELECT ensaios.id,
     id_ensaio,
@@ -95,21 +97,41 @@ doencas.provider.dados = function() {
   return(dados)
 }
 
-# Metodo para obter os dados unicos
+#================================================
+# Metodo para obter dados unicos de uma coluna
+#================================================
 doencas.provider.unique = function(dados, coluna) {
   dados = unique(dados[, coluna])
   return(dados)
 }
 
+#================================================
 # Metodo para filtrar o data.frame
+#================================================
 doencas.provider.dadosFiltrados = function(dados, input) {
-  # Filtrando dados
-  filtrado = dados[dados$safra  %in% input$safraInputDoencas &
-                   dados$estado %in% input$estadoInputDoencas &
-                   dados$cidade %in% input$cidadeInputDoencas &
-                   dados$irrigacao %in% input$irrigacaoInputDoencas &
-                   dados$fungicida %in% input$fungicidaInputDoencas &
-                   dados$tipo_de_grao %in% input$tipodegraoInputDoencas, ]
+  
+  filtrado = dados
+  # Filtrando cidade
+  if(input$cidadeInputDoencas != "Todos"){
+    filtrado = dados[dados$cidade %in% input$cidadeInputDoencas, ]
+  }
+  
+  # Filtrando tipo de grao
+  if(input$tipodegraoInputDoencas != "Todos"){
+    filtrado = dados[dados$tipo_de_grao %in% input$tipodegraoInputDoencas, ]
+  }
+  
+  # Filtrando epoca
+  if(input$epocaInputDoencas != "Todos"){
+    filtrado = dados[dados$epoca %in% input$epocaInputDoencas, ]
+  }
+  
+  # Filtrado Safra,estado,fungicida,irrigacao
+  filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas &
+                      filtrado$estado %in% input$estadoInputDoencas &
+                      filtrado$fungicida %in% input$fungicidaInputDoencas &
+                      filtrado$irrigacao %in% input$irrigacaoInputDoencas, ]
+  
   return(filtrado)
 }
 
@@ -118,6 +140,7 @@ doencas.provider.dadosFiltrados = function(dados, input) {
 TE1 = function(df, y, rep, gen, trials, accuracy) {
   tryCatch(
     expr = {
+      
       dfa = df[, c(y, gen, rep, trials)]
       names(dfa) = c("y", "g", "r", "e")
       
@@ -146,7 +169,7 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
         index.validade = mean(subsetTable$y)
         
         r = length(unique(subsetTable$r))
-        modelo = lmer(y ~ 1 + r + (1 | g) , subsetTable)
+        modelo = lmer(y ~ 1 + r + (1|g), subsetTable)
         vg = VarCorr(modelo)[[1]][1]
         
         vres = sigma(modelo) ^ 2
@@ -206,10 +229,15 @@ service.getDiagostico = function(tabela) {
     diagnostico$rgg = as.numeric(as.character(diagnostico$rgg))
     diagnostico$CVg = as.numeric(as.character(diagnostico$CVg))
     diagnostico$CVe = as.numeric(as.character(diagnostico$CVe))
+    diagnostico$media = round(mean(diagnostico$mean),2)
     diagnostico$CV = as.numeric(as.character(diagnostico$CV))
     diagnostico$CV = round(diagnostico$CV, 2)
     
+    # Renomeando colunas
+    names(diagnostico)[2] = "blup"
+    
     return(diagnostico)
+    
   } else {
     return(NULL)
   }
@@ -247,3 +275,10 @@ service.getMean = function(tabela, input) {
   
   return(t1)
 }
+#==============================================#
+naCounter = function(values) {
+  index = which(is.na(values))
+  rate = length(index) / length(values)
+  return(rate * 100)
+}
+#==============================================#

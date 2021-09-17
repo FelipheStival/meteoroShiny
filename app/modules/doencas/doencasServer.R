@@ -15,12 +15,12 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input safras
   observe({
-    safras = doencas.provider.unique(dadosEnsaios(), 'safra')
+    safras = sort(doencas.provider.unique(dadosEnsaios(), 'safra'))
     updateSelectInput(
       session = session,
       inputId = "safraInputDoencas",
-      choices = sort(safras),
-      selected = sort(safras)[1]
+      choices = safras,
+      selected = safras[1]
     ) 
   })
   
@@ -41,43 +41,46 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "cidadeInputDoencas",
-      choices = cidades,
-      selected = cidades[1]
+      choices = c("Todos", cidades),
+      selected = "Todos"
     ) 
   })
   
-  # Atualizando input tipo de grao]
+  # Atualizando input tipo de grao
   observe({
     tipoGraos = doencas.provider.unique(dadosEnsaios(), 'tipo_de_grao')
     updateSelectInput(
       session = session,
       inputId = "tipodegraoInputDoencas",
-      choices = tipoGraos,
-      selected = tipoGraos[1]
+      choices = c("Todos", tipoGraos),
+      selected = "Todos"
     ) 
   })
   
+  # Atualizando input epoca
+  observe({
+    epocas =  doencas.provider.unique(dadosEnsaios(), 'epoca')
+    updateSelectInput(
+      session = session,
+      inputId = "epocaInputDoencas",
+      choices = c("Todos", epocas),
+      selected = "Todos"
+    ) 
+  })
   
-  #==============================================#
-  # Grafico "Contagem"
   output$grafico_diagnostico_Contagem = renderScatterD3({
     
     diagnostico = service.getDiagostico(dadosFiltrados())
     
-    #=====================================
-    # Validacao
     validate(
       need(!is.null(diagnostico), "Nao ha dados suficientes para exibicao do grafico.")
     )
-    #=====================================
 
     grafico.diagnostico_Contagem(diagnostico)
     
   })
-  #==============================================#
   
-  #==============================================#
-  # Tabela "Exibir"
+  
   output$tabela_diagnostico_Exibir = renderDataTable({
     
     diagnostico = service.getDiagostico(dadosFiltrados())
@@ -104,7 +107,23 @@ doencaServer = function(input, output, session) {
       
     }
   )
-  #==============================================#
   
+  output$grafico_dadosPerdidos_Estatistica = renderPlot({
+    
+    #====================================#
+    # Validacao
+    
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 0,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    
+    #====================================#
+    
+    graphics.dadosPerdidos_Estatistica(dadosFiltrados())
+    
+  })
   
 }
