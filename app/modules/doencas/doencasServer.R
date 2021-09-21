@@ -19,8 +19,8 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "safraInputDoencas",
-      choices = safras,
-      selected = safras[1]
+      choices = c("Todos", safras),
+      selected = "Todos"
     ) 
   })
   
@@ -30,8 +30,8 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "estadoInputDoencas",
-      choices = estados,
-      selected = estados[1]
+      choices = c("Todos", estados),
+      selected = "Todos"
     ) 
   })
   

@@ -101,6 +101,7 @@ doencas.provider.dados = function() {
 # Metodo para obter dados unicos de uma coluna
 #================================================
 doencas.provider.unique = function(dados, coluna) {
+
   dados = unique(dados[, coluna])
   return(dados)
 }
@@ -110,27 +111,46 @@ doencas.provider.unique = function(dados, coluna) {
 #================================================
 doencas.provider.dadosFiltrados = function(dados, input) {
   
+  # Criando data.frame a ser filtrado
+  
   filtrado = dados
+  
+  # Checando todos
+  indexCidade = which(input[['cidadeInputDoencas']] == "Todos")
+  indexEstado = which(input[['estadoInputDoencas']] == "Todos")
+  indexTipoGrao = which(input[['tipodegraoInputDoencas']] == "Todos")
+  indexEpoca = which(input[['epocaInputDoencas']] == "Todos")
+  indexSafra = which(input[['safraInputDoencas']] == "Todos")
+  
   # Filtrando cidade
-  if(input$cidadeInputDoencas != "Todos"){
-    filtrado = dados[dados$cidade %in% input$cidadeInputDoencas, ]
+  if(length(indexCidade) == 0 & !is.null(input$cidadeInputDoencas)){
+    filtrado = filtrado[filtrado$cidade %in% input$cidadeInput,]
+  }
+  
+  # Filtrando estado
+  if(length(indexEstado) == 0 & !is.null(input$estadoInputDoencas)){
+    filtrado = filtrado[filtrado$estado %in% input$estadoInput, ]
   }
   
   # Filtrando tipo de grao
-  if(input$tipodegraoInputDoencas != "Todos"){
-    filtrado = dados[dados$tipo_de_grao %in% input$tipodegraoInputDoencas, ]
+  if(length(indexTipoGrao) == 0 & !is.null(input$tipodegraoInputDoencas)){
+    filtrado = filtrado[filtrado$tipo_de_grao %in% input$tipodegraoInputDoencas, ]
   }
   
   # Filtrando epoca
-  if(input$epocaInputDoencas != "Todos"){
-    filtrado = dados[dados$epoca %in% input$epocaInputDoencas, ]
+  if(length(indexEpoca) == 0 & !is.null(input$epocaInputDoencas)){
+    filtrado = filtrado[filtrado$epoca %in% input$epocaInputDoencas, ]
   }
   
-  # Filtrado Safra,estado,fungicida,irrigacao
-  filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas &
-                      filtrado$estado %in% input$estadoInputDoencas &
-                      filtrado$fungicida %in% input$fungicidaInputDoencas &
-                      filtrado$irrigacao %in% input$irrigacaoInputDoencas, ]
+  # Filtrando safra
+  if(length(indexSafra) == 0 & !is.null(input$safraInputDoencas)){
+    filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas, ]
+  } 
+  
+  
+  # Filtrando irrigacao e fungicida
+  filtrado = filtrado[filtrado$irrigacao %in% input$irrigacaoInputDoencas &
+                      filtrado$fungicida %in% input$fungicidaInputDoencas,]
   
   return(filtrado)
 }
@@ -145,10 +165,11 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       names(dfa) = c("y", "g", "r", "e")
       
       Ntrials = length(unique(dfa$e))
-      results = matrix(nrow = Ntrials, ncol = 11)
+      results = matrix(nrow = Ntrials, ncol = 12)
       colnames(results) = c(
         "CodigodoExperimento",
         "mean",
+        "BLUE",
         "Vg",
         "Vres",
         "Vf",
@@ -162,7 +183,6 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       
       for (index in 1:Ntrials) {
         id = unique(dfa$e)[index]
-        
         subsetIndex = which(dfa$e == id)
         subsetTable = dfa[subsetIndex, ]
         
@@ -180,8 +200,9 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
         cvg = 100 * (sqrt(vg) / m)
         cve = 100 * (sqrt(vf) / m)
         rgg = sqrt(1 - (1 / (1 + r * (cvg / cve) ^ 2)))
+        BLUE = summary(modelo)$coefficients[1,1]
         
-        res.row = c(as.character(id), m, vg, vres, vf, h2, rgg, cvg, cve, CV, NA)
+        res.row = c(as.character(id), m, BLUE, vg, vres, vf, h2, rgg, cvg, cve, CV, NA)
         results[index, ] = res.row
       }
       
@@ -194,11 +215,11 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       
       valid = ifelse(acc, splitRate[1], splitRate[2])
       
-      results[, 11] = valid
+      results[, 12] = valid
       results = data.frame(results)
-      results[, 10] = as.numeric(as.character(results[, 10]))
-      results[, 10] = ifelse(results[, 10] > 100 |
-                               results[, 10] < 0, NA, results[, 10])
+      results[, 11] = as.numeric(as.character(results[, 11]))
+      results[, 11] = ifelse(results[, 11] > 100 |
+                               results[, 11] < 0, NA, results[, 11])
       
       return(results)
     },
@@ -229,12 +250,12 @@ service.getDiagostico = function(tabela) {
     diagnostico$rgg = as.numeric(as.character(diagnostico$rgg))
     diagnostico$CVg = as.numeric(as.character(diagnostico$CVg))
     diagnostico$CVe = as.numeric(as.character(diagnostico$CVe))
-    diagnostico$media = round(mean(diagnostico$mean),2)
+    diagnostico$MEDIA = round(mean(diagnostico$mean),2)
     diagnostico$CV = as.numeric(as.character(diagnostico$CV))
     diagnostico$CV = round(diagnostico$CV, 2)
     
     # Renomeando colunas
-    names(diagnostico)[2] = "blup"
+    names(diagnostico)[2] = "BLUP"
     
     return(diagnostico)
     

@@ -22,6 +22,7 @@ app.LoadPackages = function()
     require(ggthemes)
     require(scatterD3)
     require(lme4)
+    require(shinyWidgets)
     
     #==============================================#
 }

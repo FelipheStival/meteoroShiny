@@ -39,17 +39,23 @@ doencas.sidebar = function() {
       selectInput(
         inputId = "safraInputDoencas",
         label = "Selecione a safra:",
-        choices = "13/14"
+        choices = "Todos",
+        multiple = T,
+        selectize = T
       ),
       selectInput(
         inputId = "estadoInputDoencas",
         label = "Selecione o estado:",
-        choices = "SC"
+        choices = "Todos",
+        multiple = T,
+        selectize = T
       ),
       selectInput(
         inputId = "cidadeInputDoencas",
         label = "Selecione a cidade:",
-        choices = "SC"
+        choices = "Todos",
+        multiple = T,
+        selectize = T
       ),
       selectInput(
         inputId = "irrigacaoInputDoencas",
@@ -72,12 +78,16 @@ doencas.sidebar = function() {
       selectInput(
         inputId = "tipodegraoInputDoencas",
         label = "Selecione o tipo de grao: ",
-        choices = NULL
+        choices = "Todos",
+        multiple = T,
+        selectize = T
       ),
       selectInput(
         inputId = "epocaInputDoencas",
         label = "Selecione a epoca: ",
-        choices = NULL
+        choices = "Todos",
+        multiple = T,
+        selectize = T
       )
     )
   )
