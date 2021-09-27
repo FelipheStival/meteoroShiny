@@ -14,7 +14,7 @@ INSERT INTO public.estados(nome) VALUES ('PR'),('SP');
 */----------------------------------------
 INSERT INTO cidades(nome,id_estado) 
 VALUES 
-('Itaberá',2),
+('Itabera',2),
 ('Coronel Macedo',2),
 ('Arapoti',1),
 ('Tibagi',1),
