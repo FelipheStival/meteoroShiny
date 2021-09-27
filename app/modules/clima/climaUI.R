@@ -10,10 +10,10 @@ create.pagina.grafico.Temperatura = function() {
                 label = "Selecione o grupo de dias:",
                 choices = c(
                   "Safra",
+                  "Verao",
                   "Outono",
                   "Inverno",
-                  "Primavera",
-                  "Verao"),
+                  "Primavera"),
                 selected = "Safra"
              ),
           ),

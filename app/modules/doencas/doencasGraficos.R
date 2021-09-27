@@ -29,5 +29,6 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
   names(naTabela) = c("Experimento", "Variavel", "Valor")
   
   ggplot(data = naTabela, aes(x = Variavel, y = Experimento)) + geom_tile(aes(fill = Valor), colour = "white") +
-    scale_fill_gradient(low = "#7cb342", high = "#e53935") + theme_minimal()
+    scale_fill_gradient(low = "#7cb342", high = "#e53935") + theme_minimal() +
+    theme(text = element_text(size = 15))     
 }

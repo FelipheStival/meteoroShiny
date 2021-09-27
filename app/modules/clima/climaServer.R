@@ -40,7 +40,7 @@ mapaServer = function(input, output, session) {
   
   # Reative para conseguir os dados anomalia
   dadosAnomaliaTemperatura = reactive({
-    dados = grafico.provider.dadosPrec(dadosClimaticos(),provider.meses.analises(input$safraGrupoInput))
+    dados = grafico.provider.dadosPrec(dadosClimaticos(),input$safraGrupoInput)
     return(dados)
   })
   

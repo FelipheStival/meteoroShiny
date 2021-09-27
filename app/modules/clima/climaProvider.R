@@ -124,7 +124,6 @@ grafico.provider.dadosPrec = function(dados, meses) {
   # Calculando meses
   dados$data = ymd(dados$data)
   dados$meses = format(dados$data,"%m")
-  dados = dados[dados$meses %in% meses,]
   
   #Calculando precipitacao media
   dados$ta = (dados$tmax + dados$tmin) / 2
@@ -160,37 +159,71 @@ grafico.provider.dadosPrec = function(dados, meses) {
   #Gerando coluna ano
   data$ano = format(data$data, "%Y")
   
-  #Gerando safra
-  data = grafico.provider.safra(data)
-  
-  #removendo safras NA
-  data = data[!is.na(data$safra), ]
-  
-  #sumarizando variaveis
-  data_inv = data %>%
-    group_by(safra) %>%
-    summarise(pr = sum(pr, na.rm = TRUE),
-              ta = mean(ta, na.rm = TRUE))
-  
-  #calculando anomalia variaveis
-  data_inv =  mutate(
-    data_inv,
-    pr_mean = mean(pr),
-    ta_mean = mean(ta),
-    pr_anom = (pr * 100 / pr_mean) - 100,
-    ta_anom = ta - ta_mean,
-    labyr = case_when(
-      pr_anom < -10 & ta_anom < -.5 ~ safra,
-      pr_anom < -10 &
-        ta_anom > .5 ~ safra,
-      pr_anom > 10 &
-        ta_anom < -.5 ~ safra,
-      pr_anom > 10 &
-        ta_anom > .5 ~ safra
-    ),
-    symb_point = ifelse(!is.na(labyr), "yes", "no"),
-    lab_font = ifelse(labyr == 2020, "bold", "plain")
-  )
+  if(meses == "Safra"){
+    
+    #Gerando safra
+    data = grafico.provider.safra(data)
+    
+    #removendo safras NA
+    data = data[!is.na(data$safra), ]
+    
+    #sumarizando variaveis
+    data_inv = data %>%
+      group_by(safra) %>%
+      summarise(pr = sum(pr, na.rm = TRUE),
+                ta = mean(ta, na.rm = TRUE))
+    
+    #calculando anomalia variaveis
+    data_inv =  mutate(
+      data_inv,
+      pr_mean = mean(pr),
+      ta_mean = mean(ta),
+      pr_anom = (pr * 100 / pr_mean) - 100,
+      ta_anom = ta - ta_mean,
+      labyr = case_when(
+        pr_anom < -10 & ta_anom < -.5 ~ safra,
+        pr_anom < -10 &
+          ta_anom > .5 ~ safra,
+        pr_anom > 10 &
+          ta_anom < -.5 ~ safra,
+        pr_anom > 10 &
+          ta_anom > .5 ~ safra
+      ),
+      symb_point = ifelse(!is.na(labyr), "yes", "no"),
+      lab_font = ifelse(labyr == 2020, "bold", "plain")
+    ) 
+  } else {
+    
+    # Filtrando dados
+    data = data[data$season %in% meses,]
+    
+    #sumarizando variaveis
+    data_inv = data %>%
+      group_by(winter_yr) %>%
+      summarise(pr = sum(pr, na.rm = TRUE),
+                ta = mean(ta, na.rm = TRUE))
+    
+    #calculando anomalia variaveis
+    data_inv =  mutate(
+      data_inv,
+      pr_mean = mean(pr),
+      ta_mean = mean(ta),
+      pr_anom = (pr * 100 / pr_mean) - 100,
+      ta_anom = ta - ta_mean,
+      labyr = case_when(
+        pr_anom < -10 & ta_anom < -.5 ~ winter_yr,
+        pr_anom < -10 &
+          ta_anom > .5 ~ winter_yr,
+        pr_anom > 10 &
+          ta_anom < -.5 ~ winter_yr,
+        pr_anom > 10 &
+          ta_anom > .5 ~ winter_yr
+      ),
+      symb_point = ifelse(!is.na(labyr), "yes", "no"),
+      lab_font = ifelse(labyr == 2020, "bold", "plain"))
+      
+      return(data_inv)
+  }
   
   return(data_inv)
 }

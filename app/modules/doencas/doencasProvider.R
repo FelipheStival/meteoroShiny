@@ -112,7 +112,6 @@ doencas.provider.unique = function(dados, coluna) {
 doencas.provider.dadosFiltrados = function(dados, input) {
   
   # Criando data.frame a ser filtrado
-  
   filtrado = dados
   
   # Checando todos
@@ -165,11 +164,12 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       names(dfa) = c("y", "g", "r", "e")
       
       Ntrials = length(unique(dfa$e))
-      results = matrix(nrow = Ntrials, ncol = 12)
+      results = matrix(nrow = Ntrials, ncol = 13)
       colnames(results) = c(
         "CodigodoExperimento",
         "mean",
         "BLUE",
+        "MEDIA_ARITMETICA",
         "Vg",
         "Vres",
         "Vf",
@@ -182,6 +182,7 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       )
       
       for (index in 1:Ntrials) {
+        
         id = unique(dfa$e)[index]
         subsetIndex = which(dfa$e == id)
         subsetTable = dfa[subsetIndex, ]
@@ -189,21 +190,31 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
         index.validade = mean(subsetTable$y)
         
         r = length(unique(subsetTable$r))
-        modelo = lmer(y ~ 1 + r + (1|g), subsetTable)
-        vg = VarCorr(modelo)[[1]][1]
+        MEDIA_ARITMETICA =  mean(subsetTable$y, na.rm = TRUE)
         
-        vres = sigma(modelo) ^ 2
-        vf = vg + vres
-        h2 = vg / (vg + (vres / r))
-        m = fixef(modelo)[[1]]
-        CV = 100 * attr(VarCorr(modelo), "sc") / m
-        cvg = 100 * (sqrt(vg) / m)
-        cve = 100 * (sqrt(vf) / m)
-        rgg = sqrt(1 - (1 / (1 + r * (cvg / cve) ^ 2)))
-        BLUE = summary(modelo)$coefficients[1,1]
-        
-        res.row = c(as.character(id), m, BLUE, vg, vres, vf, h2, rgg, cvg, cve, CV, NA)
-        results[index, ] = res.row
+        if(r > 1){
+          
+          modelo = lmer(y ~ 1 + r + (1|g), subsetTable)
+          vg = VarCorr(modelo)[[1]][1]
+          
+          vres = sigma(modelo) ^ 2
+          vf = vg + vres
+          h2 = vg / (vg + (vres / r))
+          m = fixef(modelo)[[1]]
+          CV = 100 * attr(VarCorr(modelo), "sc") / m
+          cvg = 100 * (sqrt(vg) / m)
+          cve = 100 * (sqrt(vf) / m)
+          rgg = sqrt(1 - (1 / (1 + r * (cvg / cve) ^ 2)))
+          BLUE = summary(modelo)$coefficients[1,1]
+          
+          
+          res.row = c(as.character(id), m, BLUE, MEDIA_ARITMETICA, vg, vres, vf, h2, rgg, cvg, cve, CV, NA)
+          results[index, ] = res.row 
+          
+        } else {
+          res.row = c(as.character(id),NA, NA, MEDIA_ARITMETICA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+          results[index, ] = res.row 
+        }
       }
       
       r7 = as.numeric(results[, 7])
@@ -215,15 +226,16 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       
       valid = ifelse(acc, splitRate[1], splitRate[2])
       
-      results[, 12] = valid
+      results[, 13] = valid
       results = data.frame(results)
-      results[, 11] = as.numeric(as.character(results[, 11]))
-      results[, 11] = ifelse(results[, 11] > 100 |
-                               results[, 11] < 0, NA, results[, 11])
+      results[, 12] = as.numeric(as.character(results[, 12]))
+      results[, 12] = ifelse(results[, 12] > 100 |
+                               results[, 12] < 0, NA, results[, 12])
       
       return(results)
     },
     error = function(e) {
+      browser()
       return(NULL)
     }
   )
@@ -242,20 +254,42 @@ service.getDiagostico = function(tabela) {
   )
   
   if (!is.null(diagnostico)) {
-    diagnostico$mean = as.numeric(as.character(diagnostico$mean))
-    diagnostico$Vg = as.numeric(as.character(diagnostico$Vg))
-    diagnostico$Vres = as.numeric(as.character(diagnostico$Vres))
-    diagnostico$Vf = as.numeric(as.character(diagnostico$Vf))
-    diagnostico$h2 = as.numeric(as.character(diagnostico$h2))
-    diagnostico$rgg = as.numeric(as.character(diagnostico$rgg))
-    diagnostico$CVg = as.numeric(as.character(diagnostico$CVg))
-    diagnostico$CVe = as.numeric(as.character(diagnostico$CVe))
-    diagnostico$MEDIA = round(mean(diagnostico$mean),2)
-    diagnostico$CV = as.numeric(as.character(diagnostico$CV))
+    
+    diagnostico$BLUE = round(as.numeric(diagnostico$BLUE),0)
+    diagnostico$MEDIA_ARITMETICA = round(as.numeric(diagnostico$MEDIA_ARITMETICA),0)
+    diagnostico$mean = round(as.numeric(as.character(diagnostico$mean)),0)
+    diagnostico$Vg = round(as.numeric(as.character(diagnostico$Vg)),0)
+    diagnostico$Vres = round(as.numeric(as.character(diagnostico$Vres)),0)
+    diagnostico$Vf = round(as.numeric(as.character(diagnostico$Vf)),2)
+    diagnostico$h2 = round(as.numeric(as.character(diagnostico$h2)),2)
+    diagnostico$rgg = round(as.numeric(as.character(diagnostico$rgg)),2)
+    diagnostico$CVg = round(as.numeric(as.character(diagnostico$CVg)),2)
+    diagnostico$CVe = round(as.numeric(as.character(diagnostico$CVe)),2)
+    diagnostico$CV = round(as.numeric(as.character(diagnostico$CV)),2)
     diagnostico$CV = round(diagnostico$CV, 2)
+    
+    # Ordenando colunas
+    diagnostico = diagnostico[,c(
+      "CodigodoExperimento",
+      "mean",
+      "BLUE",
+      "MEDIA_ARITMETICA",
+      "Vg",
+      "Vres",
+      "Vf",
+      "h2",
+      "rgg",
+      "CVg",
+      "CVe",
+      "CV",
+      "Diagnostico"
+    )]
     
     # Renomeando colunas
     names(diagnostico)[2] = "BLUP"
+    
+    # Ordenando colunas
+    diagnostico = diagnostico[order(diagnostico$Diagnostico),]
     
     return(diagnostico)
     
