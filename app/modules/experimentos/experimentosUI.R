@@ -2,9 +2,13 @@
 # Aba "Dados Perdidos"
 #==============================================
 tabItem.dadosPerdidos = function() {
-  
-  tabItem(tabName = "dados-perdidos", 
-          plotOutput("grafico_dadosPerdidos_Estatistica",width = "100%", height = "90vh") %>% withSpinner(color="#0dc5c1")
+  tabItem(
+    tabName = "dados-perdidos",
+    plotOutput(
+      "grafico_dadosPerdidos_Estatistica",
+      width = "100%",
+      height = "90vh"
+    ) %>% withSpinner(color = "#0dc5c1")
   )
 }
 
@@ -13,11 +17,18 @@ tabItem.dadosPerdidos = function() {
 # Aba "Diagnostico"
 #==============================================
 tabItem.diagnostico = function() {
-  
-  tabItem(tabName = "diagnostico",
-          box(width = 12,scatterD3Output("grafico_diagnostico_Contagem")  %>% withSpinner(color="#0dc5c1")),
-          box(width = 12 ,dataTableOutput("tabela_diagnostico_Exibir") %>% withSpinner(color="#0dc5c1")),
-          downloadButton("botao_diagnostico_Download", 'Download (csv)')
+  tabItem(
+    tabName = "diagnostico",
+    box(
+      width = 12,
+      scatterD3Output("grafico_diagnostico_Contagem")  %>% withSpinner(color =
+                                                                         "#0dc5c1")
+    ),
+    box(
+      width = 12 ,
+      dataTableOutput("tabela_diagnostico_Exibir") %>% withSpinner(color = "#0dc5c1")
+    ),
+    downloadButton("botao_diagnostico_Download", 'Download (csv)')
   )
 }
 
@@ -30,8 +41,17 @@ doencas.sidebar = function() {
       "Gráficos",
       tabName = "dados-perdidos",
       icon = icon("line-chart"),
-      menuSubItem("Dados Perdidos", tabName = "dados-perdidos", icon = icon("line-chart"), selected = T),
-      menuSubItem("Diagnostico", tabName = "diagnostico", icon = icon("line-chart"))
+      menuSubItem(
+        "Dados Perdidos",
+        tabName = "dados-perdidos",
+        icon = icon("line-chart"),
+        selected = T
+      ),
+      menuSubItem(
+        "Diagnostico",
+        tabName = "diagnostico",
+        icon = icon("line-chart")
+      )
     ),
     menuItem(
       text = "Variaveis",
@@ -65,19 +85,15 @@ doencas.sidebar = function() {
       selectInput(
         inputId = "irrigacaoInputDoencas",
         label = "irrigacao:",
-        choices = c(
-          "Sim" = "t",
-          "Nao" = "f"
-        ),
+        choices = c("Sim" = "t",
+                    "Nao" = "f"),
         selected = "Sim"
       ),
       selectInput(
         inputId = "fungicidaInputDoencas",
         label = "Selecione a fungicida: ",
-        choices = c(
-          "Sim" = "t",
-          "Nao" = "f"
-        ),
+        choices = c("Sim" = "t",
+                    "Nao" = "f"),
         selected = "Sim"
       ),
       selectInput(
@@ -104,7 +120,16 @@ doencasUI = div(id = "clima-container",
                 dashboardPage(
                   #========================header=========================
                   
-                  dashboardHeader(title =  "Experimentos"),
+                  dashboardHeader(title =  "Experimentos",
+                                  tags$li(
+                                    class = "dropdown",
+                                    actionLink(
+                                      inputId = "btnRetonarExperimentos",
+                                      label = "Voltar",
+                                      icon = icon("sign-out"),
+                                      style = "font-size: 1.5em;" 
+                                    )
+                                  )),
                   
                   #=======================================================
                   
@@ -115,11 +140,9 @@ doencasUI = div(id = "clima-container",
                   #========================================================
                   
                   #=======================body=============================
-                  dashboardBody(
-                    tabItems(
-                      tabItem.diagnostico(),
-                      tabItem.dadosPerdidos()
-                    )
-                  )
+                  dashboardBody(tabItems(
+                    tabItem.diagnostico(),
+                    tabItem.dadosPerdidos()
+                  ))
                   #========================================================
                 ))

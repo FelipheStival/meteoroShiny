@@ -1,6 +1,11 @@
 # Mapa service
 mapaServer = function(input, output, session) {
   
+  # Botao retornar
+  observeEvent(input$btnRetonarExperimentos,
+               change_page('/')
+  )
+  
   # Obter estados
   observe({
     estados = provider.obterEstados()

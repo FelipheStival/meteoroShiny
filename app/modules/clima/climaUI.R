@@ -4,18 +4,18 @@
 create.pagina.grafico.Temperatura = function() {
   #criando janela
   tabItem(tabName = "AnomaliaTemperaturaPlot",
-          box(width = 3,
-              selectInput(
-                inputId = "safraGrupoInput",
-                label = "Selecione o grupo de dias:",
-                choices = c(
-                  "Safra",
-                  "Verao",
-                  "Outono",
-                  "Inverno",
-                  "Primavera"),
-                selected = "Safra"
-             ),
+          box(
+            width = 3,
+            selectInput(
+              inputId = "safraGrupoInput",
+              label = "Selecione o grupo de dias:",
+              choices = c("Safra",
+                          "Verao",
+                          "Outono",
+                          "Inverno",
+                          "Primavera"),
+              selected = "Safra"
+            ),
           ),
           box(width = 9,
               withSpinner(
@@ -24,9 +24,7 @@ create.pagina.grafico.Temperatura = function() {
                   width = "100%",
                   height = "85vh"
                 )
-              )
-            )
-          )
+              )))
 }
 
 #==================================================================
@@ -337,7 +335,16 @@ climaUI = div(id = "clima-container",
               dashboardPage(
                 #========================header=========================
                 
-                dashboardHeader(title =  "Clima"),
+                dashboardHeader(title =  "Clima",
+                                tags$li(
+                                  class = "dropdown",
+                                  actionLink(
+                                    inputId = "btnRetonarClima",
+                                    label = "Voltar",
+                                    icon = icon("sign-out"),
+                                    style = "font-size: 1.5em;"
+                                  )
+                                )),
                 
                 #=======================================================
                 

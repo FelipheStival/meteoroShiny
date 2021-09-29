@@ -1,6 +1,11 @@
 # Doenca service
 doencaServer = function(input, output, session) {
   
+  # Botao retornar
+  observeEvent(input$btnRetonarClima,
+               change_page('/')
+  )
+  
   # dados doenca input service
   dadosEnsaios = reactive({
     dados = experimentos.provider.dados()
