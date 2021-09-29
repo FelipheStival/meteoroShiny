@@ -235,7 +235,6 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
       return(results)
     },
     error = function(e) {
-      browser()
       return(NULL)
     }
   )
