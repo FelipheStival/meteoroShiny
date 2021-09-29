@@ -1,9 +1,9 @@
 #================================================
 # Metodo para obter os dados dos genotipos
 #================================================
-doencas.provider.dados = function() {
+experimentos.provider.dados = function() {
   statement = "SELECT ensaios.id,
-    id_ensaio,
+     id_ensaio,
 	   estados.nome as estado,
 	   cidades.nome as cidade,
 	   tipos_de_graos.sigla as tipo_de_grao,
@@ -81,18 +81,21 @@ doencas.provider.dados = function() {
 	   seca_pos_floracao,
 	   tecnica, validacao,
 	   epoca,
+	   cultura.nome as cultura,
 	   flor_das,
 	   flor_dae,
 	   ciclo_das,
 	   ciclo_dae,
 	   id_local,
-	   id_genotipo
+	   id_genotipo,
+	   id_cultura
 	FROM public.ensaios
 	JOIN genotipos ON ensaios.id_genotipo = genotipos.id
 	JOIN locais ON ensaios.id_local = locais.id
 	JOIN cidades ON locais.id_cidade = cidades.id
 	JOIN estados ON cidades.id_estado = estados.id
-	JOIN tipos_de_graos ON genotipos.id_tipo_grao = tipos_de_graos.id"
+	JOIN tipos_de_graos ON genotipos.id_tipo_grao = tipos_de_graos.id
+	JOIN cultura ON ensaios.id_cultura = cultura.id"
   dados = banco.provider.executeQuery(statement, DOENCA_DB_DATABASE)
   return(dados)
 }
@@ -100,7 +103,7 @@ doencas.provider.dados = function() {
 #================================================
 # Metodo para obter dados unicos de uma coluna
 #================================================
-doencas.provider.unique = function(dados, coluna) {
+experimentos.provider.unique = function(dados, coluna) {
 
   dados = unique(dados[, coluna])
   return(dados)
@@ -109,7 +112,7 @@ doencas.provider.unique = function(dados, coluna) {
 #================================================
 # Metodo para filtrar o data.frame
 #================================================
-doencas.provider.dadosFiltrados = function(dados, input) {
+experimentos.provider.dadosFiltrados = function(dados, input) {
   
   # Criando data.frame a ser filtrado
   filtrado = dados
@@ -146,10 +149,10 @@ doencas.provider.dadosFiltrados = function(dados, input) {
     filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas, ]
   } 
   
-  
   # Filtrando irrigacao e fungicida
   filtrado = filtrado[filtrado$irrigacao %in% input$irrigacaoInputDoencas &
-                      filtrado$fungicida %in% input$fungicidaInputDoencas,]
+                      filtrado$fungicida %in% input$fungicidaInputDoencas &
+                      filtrado$cultura   %in% input$culturaInputDoencas, ]
   
   return(filtrado)
 }

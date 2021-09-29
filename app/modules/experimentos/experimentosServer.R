@@ -3,19 +3,30 @@ doencaServer = function(input, output, session) {
   
   # dados doenca input service
   dadosEnsaios = reactive({
-    dados = doencas.provider.dados()
+    dados = experimentos.provider.dados()
     return(dados)
   })
   
   # Dados filtrados
   dadosFiltrados = reactive({
-    dados = doencas.provider.dadosFiltrados(dadosEnsaios(), input)
+    dados = experimentos.provider.dadosFiltrados(dadosEnsaios(), input)
     return(dados)
+  })
+  
+  # Atualizando input cultura
+  observe({
+    culturas = experimentos.provider.unique(dadosEnsaios(), 'cultura')
+    updateSelectInput(
+      session = session,
+      inputId = "culturaInputDoencas",
+      choices = culturas,
+      selected = culturas[1]
+    )
   })
   
   # Atualizando input safras
   observe({
-    safras = sort(doencas.provider.unique(dadosEnsaios(), 'safra'))
+    safras = sort(experimentos.provider.unique(dadosEnsaios(), 'safra'))
     updateSelectInput(
       session = session,
       inputId = "safraInputDoencas",
@@ -26,7 +37,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input estados
   observe({
-    estados = doencas.provider.unique(dadosEnsaios(), 'estado')
+    estados = experimentos.provider.unique(dadosEnsaios(), 'estado')
     updateSelectInput(
       session = session,
       inputId = "estadoInputDoencas",
@@ -37,7 +48,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input cidades
   observe({
-    cidades = doencas.provider.unique(dadosEnsaios(), 'cidade')
+    cidades = experimentos.provider.unique(dadosEnsaios(), 'cidade')
     updateSelectInput(
       session = session,
       inputId = "cidadeInputDoencas",
@@ -48,7 +59,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input tipo de grao
   observe({
-    tipoGraos = doencas.provider.unique(dadosEnsaios(), 'tipo_de_grao')
+    tipoGraos = experimentos.provider.unique(dadosEnsaios(), 'tipo_de_grao')
     updateSelectInput(
       session = session,
       inputId = "tipodegraoInputDoencas",
@@ -59,7 +70,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input epoca
   observe({
-    epocas =  doencas.provider.unique(dadosEnsaios(), 'epoca')
+    epocas =  experimentos.provider.unique(dadosEnsaios(), 'epoca')
     updateSelectInput(
       session = session,
       inputId = "epocaInputDoencas",

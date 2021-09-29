@@ -44,6 +44,11 @@ doencas.sidebar = function() {
         selectize = T
       ),
       selectInput(
+        inputId = "culturaInputDoencas",
+        label = "Selecione a cultura:",
+        choices = "Todos"
+      ),
+      selectInput(
         inputId = "estadoInputDoencas",
         label = "Selecione o estado:",
         choices = "Todos",
