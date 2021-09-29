@@ -57,6 +57,17 @@ CREATE TABLE public.tipos_de_graos
 );
 
 /*------------------------------------
+ Tabela cultura
+*/------------------------------------
+CREATE TABLE public.cultura
+(
+    id bigserial NOT NULL,
+    nome text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+/*------------------------------------
  Tabela genotipos
 */------------------------------------
 CREATE TABLE public.genotipos
@@ -160,6 +171,7 @@ CREATE TABLE public.ensaios(
   ,CICLO_DAE                                                NUMERIC
   ,id_local                                                 BIGINT  NOT NULL
   ,id_genotipo                                              BIGINT  NOT NULL
+  ,id_cultura                                               BIGINT  NOT NULL
   ,CONSTRAINT "FK_ENSAIOS_LOCAL" FOREIGN KEY (id_local)
         REFERENCES public.locais (id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -170,4 +182,10 @@ CREATE TABLE public.ensaios(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
+  ,CONSTRAINT "FK_ENSAIOS_CULTURA" FOREIGN KEY (id_cultura)
+        REFERENCES public.cultura (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+		
 );
