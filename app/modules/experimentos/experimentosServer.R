@@ -86,7 +86,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando input local analise estatistica
   observe({
-    locais = experimentos.provider.unique(dadosEnsaios(), 'local')
+    locais = experimentos.provider.unique(dadosFiltrados(), 'local')
     updateSelectInput(
       session = session,
       inputId = "select_analiseEstatistica_local",
@@ -96,7 +96,7 @@ doencaServer = function(input, output, session) {
   
   # Atualizando lista genotipos grafico linhas
   observe({
-    genotipos = experimentos.provider.unique(dadosEnsaios(), 'genotipo')
+    genotipos = experimentos.provider.unique(dadosFiltrados(), 'genotipo')
     updateSelectInput(
       session = session,
       inputId = "GenotipoSelectDoencas",
