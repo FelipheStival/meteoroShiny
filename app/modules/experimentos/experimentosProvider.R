@@ -6,6 +6,7 @@ experimentos.provider.dados = function() {
      id_ensaio,
 	   estados.nome as estado,
 	   cidades.nome as cidade,
+	   locais.nome as local,
 	   tipos_de_graos.sigla as tipo_de_grao,
 	   genotipos.nome as genotipo,
      parcela,
@@ -301,18 +302,21 @@ service.getDiagostico = function(tabela) {
 }
 
 service.getY = function(tabela) {
+  tabela$ano = as.Date(tabela$data_semeadura)
+  tabela$ano = format(tabela$ano, "%Y")
   Y = y.matrix.2(
-    trait = "PROD",
-    gid = "ntrat",
-    rep = "rep",
+    trait = "produtividade",
+    gid = "genotipo",
+    rep = "repeticao",
     year = "ano",
-    site = "Local_2",
+    site = "local",
     df = tabela
   )
   return(Y)
 }
 
 service.getMean = function(tabela, input) {
+  
   Y = service.getY(tabela)
   Y1 = as.data.frame(Y[[1]])
   
@@ -322,13 +326,14 @@ service.getMean = function(tabela, input) {
   
   t1 = data.frame(t1)
   
-  IndexSelecionados = which(!input$GenotipoSelect %in% "todos")
+  indexSelecionados = which(!input$GenotipoSelectDoencas %in% "Todos")
   
-  if (!is.null(input$GenotipoSelect) &&
-      length(IndexSelecionados) > 0) {
-    GenNames = input$GenotipoSelect[IndexSelecionados]
+  if (!is.null(input$GenotipoSelectDoencas) &&
+      length(indexSelecionados) > 0) {
+    GenNames = input$GenotipoSelectDoencas[indexSelecionados]
     t1 = t1[t1$gid %in% GenNames, ]
   }
+  
   
   return(t1)
 }
@@ -337,5 +342,77 @@ naCounter = function(values) {
   index = which(is.na(values))
   rate = length(index) / length(values)
   return(rate * 100)
+}
+#==============================================#
+
+#==============================================#
+y.matrix.2 = function(df,trait,rep,site, gid, year){
+  
+  dataset = df[,c(trait, rep, site, gid, year)]
+  names(dataset) = c("trait","rep", "site", "gid", "year")
+  
+  r = length(unique(dataset$rep))
+  y = length(unique(dataset$year))
+  s = length(unique(dataset$site))
+  
+  mix.model.an = lmer(trait~rep:site:year+(1|gid)+(1|gid:site) + (1|gid:year) + (1|gid:site:year),data= dataset)
+  
+  rn = ranef(mix.model.an)
+  
+  g = convertModel(rn$"gid", c("gid", "g.hat"))
+  gy = convertModel(rn$"gid:year", c("gid","year", "gy.hat"))
+  gl = convertModel(rn$"gid:site", c("gid","site", "gl.hat"))
+  gly = convertModel(rn$"gid:site:year", c("gid","site","year", "gly.hat"))
+  
+  resposta = merge(g, gy, by = c("gid"))
+  resposta = merge(resposta, gl, by = c("gid"))
+  resposta = merge(resposta, gly, by = c("gid","site","year"))
+  
+  fn = fixef(mix.model.an)[1]
+  
+  resposta$y = resposta$g.hat + resposta$gl.hat + resposta$gy.hat + resposta$gly.hat + fn
+  
+  hat_table = resposta[,4:7]
+  resposta$y.cor = apply(hat_table, 1, function(x) {
+    return(sum(x,na.rm=T) + fn)
+  })
+  
+  resp_list = list()
+  resp_list$Adjusted.Means.df = resposta
+  resp_list$Mu = fn
+  resp_list$comps = Comp.var(mix.model.an,r=r,s=s,y=y)
+  
+  return(resp_list)
+}
+#==============================================#
+
+#==============================================#
+convertModel = function(list_table, colNames) {
+  
+  rowValues = strsplit(row.names(list_table), split = ":")
+  resposta = do.call(rbind, rowValues)
+  
+  resposta = data.frame(resposta)
+  resposta$hat = list_table[,1]
+  names(resposta) = colNames
+  
+  return(resposta)
+}
+#==============================================#
+
+#==============================================#
+Comp.var = function(model,r,s,y) {
+  
+  vcor = VarCorr(model)
+  
+  var.total = sum(vcor$"gid"[1], vcor$"gid:year"[1], vcor$"gid:site"[1], vcor$"gid:site:year"[1],sigma(model)^2)
+  h2.plot = vcor$"gid"[1]/(vcor$"gid"[1]+vcor$"gid:year"[1] + vcor$"gid:site"[1]+vcor$"gid:site:year"[1]+sigma(model)^2)
+  
+  Cgy = vcor$"gid:year"[1]/var.total
+  Cgl = vcor$"gid:year"[1]/var.total
+  Cgly = vcor$"gid:site:year"[1]/var.total
+  
+  h2.mean = vcor$"gid"[1]/(vcor$"gid"[1]+(vcor$"gid:year"[1]/y) + (vcor$"gid:site"[1]/s)+(vcor$"gid:site:year"[1]/(y*s))+(sigma(model)^2)/(y*r*s))
+  return(list(h2.mean=h2.mean,h2.plot=h2.plot,Cgy=Cgy, Cgl = Cgl, Cgly = Cgly))
 }
 #==============================================#

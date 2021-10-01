@@ -84,6 +84,27 @@ doencaServer = function(input, output, session) {
     ) 
   })
   
+  # Atualizando input local analise estatistica
+  observe({
+    locais = experimentos.provider.unique(dadosEnsaios(), 'local')
+    updateSelectInput(
+      session = session,
+      inputId = "select_analiseEstatistica_local",
+      choices = locais
+    )
+  })
+  
+  # Atualizando lista genotipos grafico linhas
+  observe({
+    genotipos = experimentos.provider.unique(dadosEnsaios(), 'genotipo')
+    updateSelectInput(
+      session = session,
+      inputId = "GenotipoSelectDoencas",
+      choices = c("Todos", genotipos),
+      selected = "Todos"
+    )
+  })
+  
   output$grafico_diagnostico_Contagem = renderScatterD3({
     
     diagnostico = service.getDiagostico(dadosFiltrados())
@@ -140,6 +161,85 @@ doencaServer = function(input, output, session) {
     
     graphics.dadosPerdidos_Estatistica(dadosFiltrados())
     
+  })
+  
+  
+  #==============================================#
+  # Grafico "Resumo"
+  output$grafico_analiseEstatistica_Resumo = renderPlot({
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    y = service.getY(dadosFiltrados())
+    
+    grafico.analiseEstatistica_Resumo(y)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Unitario"
+  output$grafico_analiseEstatistica_Unitario = renderPlot({
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    y = service.getY(dadosFiltrados())
+    grafico.analiseEstatistica_Unitario(y, input$select_analiseEstatistica_local)
+    
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Heatmap"
+  output$grafico_analiseEstatistica_Heatmap = renderPlot({
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    y = service.getY(dadosFiltrados())
+    
+    grafico.analiseEstatistica_Heatmap(y)
+    
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "linhas"
+  output$graficolinha = renderPlot({
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    
+    y = service.getMean(dadosFiltrados(), input)
+    grafico.GraficoLinhas(y)
   })
   
 }

@@ -23,6 +23,7 @@ app.LoadPackages = function()
     require(scatterD3)
     require(lme4)
     require(shinyWidgets)
+    require(forcats)
     
     #==============================================#
 }
