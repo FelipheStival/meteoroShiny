@@ -127,12 +127,12 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
   
   # Filtrando cidade
   if(length(indexCidade) == 0 & !is.null(input$cidadeInputDoencas)){
-    filtrado = filtrado[filtrado$cidade %in% input$cidadeInput,]
+    filtrado = filtrado[filtrado$cidade %in% input$cidadeInputDoencas,]
   }
   
   # Filtrando estado
   if(length(indexEstado) == 0 & !is.null(input$estadoInputDoencas)){
-    filtrado = filtrado[filtrado$estado %in% input$estadoInput, ]
+    filtrado = filtrado[filtrado$estado %in% input$estadoInputDoencas, ]
   }
   
   # Filtrando tipo de grao
@@ -322,7 +322,7 @@ service.getMean = function(tabela, input) {
   
   t1 = Y1 %>%
     group_by(gid, site) %>%
-    summarize(mean = mean(y.cor, na.rm = TRUE))
+    dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
   
   t1 = data.frame(t1)
   
@@ -414,5 +414,78 @@ Comp.var = function(model,r,s,y) {
   
   h2.mean = vcor$"gid"[1]/(vcor$"gid"[1]+(vcor$"gid:year"[1]/y) + (vcor$"gid:site"[1]/s)+(vcor$"gid:site:year"[1]/(y*s))+(sigma(model)^2)/(y*r*s))
   return(list(h2.mean=h2.mean,h2.plot=h2.plot,Cgy=Cgy, Cgl = Cgl, Cgly = Cgly))
+}
+#==============================================#
+
+
+model.GGE = function(tabela) {
+  Y = model.Values(tabela)
+  gge.model = NULL
+  if(!is.null(Y)){
+    validate.model = gge(acast(Y, genotipo ~ id_gge, value.var = "emmean"))
+    validate.NA = colSums(is.na(validate.model$x))
+    validate.NA = length(validate.NA[validate.NA > 1])
+    if(validate.NA < 1){
+      gge.model = validate.model
+    }
+  }
+  return(gge.model)
+}
+
+#==============================================#
+model.Values = function(tabela) {
+  tryCatch(
+    expr = {
+      # modelo de efeito fixo
+      fixed = dlply(tabela, .(id_ensaio), function(x)
+        lm(produtividade ~ repeticao + genotipo, x))
+      means = llply(fixed, function(x)
+        emmeans(x, specs = "genotipo"))
+      
+      y = NULL
+      for (j in 1:length(means)) {
+        y = rbind(y, data.frame(means[[j]], id_ensaio = names(means)[j]))
+      }
+      
+      W = unique(tabela[, c(2, 5)])
+      Y = merge(y, W, by = "id_ensaio")
+      
+      lastNumber = sapply(Y$id_ensaio, function(id) {
+        id = as.character(id)
+        tamanho = nchar(id)
+        return(substr(id, tamanho - 2, tamanho))
+      })
+      
+      Y$id_gge = sprintf("%s_%s", Y$local, lastNumber)
+      
+      return(Y)
+    },
+    error = function(e) {
+      return(NULL)
+    }
+  )
+}
+#==============================================#
+
+#==============================================#
+model.deno = function(tabela) {
+  Y = model.Values(tabela)
+  if(!is.null(Y)){
+    tryCatch(
+      expr = {
+        
+        Ym = acast(Y,genotipo~id_ensaio, value.var="emmean")
+        ysea = t(gge(Ym)$x)
+        
+        dd = dist(ysea, method = "euclidean")
+        hc = hclust(dd, method = "ward.D2")
+        
+        return(hc)   
+      },
+      error = function(e){ 
+        return(NULL)
+      }
+    )
+  }
 }
 #==============================================#

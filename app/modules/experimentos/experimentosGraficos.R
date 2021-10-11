@@ -56,10 +56,11 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
 # Aba "Estatistica"
 # Grafico "Resumo"
 grafico.analiseEstatistica_Resumo = function(tabela) {
+  
   Y1 = data.frame(tabela[[1]])
   model.mean = as.numeric(tabela[[2]])
   
-  Y1 = Y1 %>% group_by(gid) %>% summarize(mean = mean(y.cor, na.rm = TRUE))
+  Y1 = Y1 %>% group_by(gid) %>% dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
   Y1$mean = round((Y1$mean - model.mean), 2)
   Y1$type = ifelse(Y1$mean < 0, "below", "above")
   
@@ -132,7 +133,7 @@ grafico.analiseEstatistica_Unitario = function(tabela, site = "") {
 # Grafico "Heatmap"
 grafico.analiseEstatistica_Heatmap = function(tabela) {
   Y1 = data.frame(tabela[[1]])
-  Y1 = Y1 %>% group_by(gid, site) %>% summarize(mean = mean(y.cor, na.rm = TRUE))
+  Y1 = Y1 %>% group_by(gid, site) %>% dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
   
   ggplot(Y1, aes(site, reorder(gid, mean))) +
     geom_tile(aes(fill = mean), color = "white") +
@@ -153,6 +154,7 @@ grafico.analiseEstatistica_Heatmap = function(tabela) {
 # Aba "Estatistica"
 # Grafico "Linhas"
 grafico.GraficoLinhas = function(dados) {
+  
   dados$gid = as.character(dados$gid)
   dados$gid = factor(dados$gid)
   
@@ -186,3 +188,49 @@ grafico.GraficoLinhas = function(dados) {
   
   return(p)
 }
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Quem vence e aonde"
+grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
+  WhichWon(gge.model, sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+}
+#==============================================#
+
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Ordem de Ambiente"
+grafico.analiseGGE_OrdemDeAmbiente = function(gge.model) {
+  RankEnv(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+}
+
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Ordem de genotipo"
+grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
+  RankGen(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+}
+#==============================================#
+
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Relacao entre ambientes"
+grafico.analiseGGE_RelacaoEntreAmbientes = function(gge.model) {
+  EnvRelationship(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+}
+#==============================================#
+
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Estabilidade / Media"
+grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
+  MeanStability(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+}
+#==============================================#
+
+#==============================================#
+# Aba "Analise GGE"
+# Grafico "Denograma"
+grafico.analiseGGE_Denograma = function(deno) {
+  plot(as.phylo(deno), cex = 0.7, label.offset = 0.7)
+}
+#==============================================#

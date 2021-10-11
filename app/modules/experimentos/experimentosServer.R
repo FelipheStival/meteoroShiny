@@ -242,4 +242,128 @@ doencaServer = function(input, output, session) {
     grafico.GraficoLinhas(y)
   })
   
+  #==============================================#
+  # Grafico "Quem vence e aonde"
+  output$grafico_analiseGGE_QuemVenceEAonde = renderPlot({
+    
+    gge = model.GGE(dadosFiltrados()) 
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(gge),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    grafico.analiseGGE_QuemVenceEAonde(gge)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Ordem de Ambiente"
+  output$grafico_analiseGGE_OrdemDeAmbiente = renderPlot({
+    
+    gge = model.GGE(dadosFiltrados())
+    
+    #====================================#
+    # Validacao
+    
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(gge),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    
+    grafico.analiseGGE_OrdemDeAmbiente(gge)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Ordem de genotipo"
+  output$grafico_analiseGGE_OrdemDeGenotipo = renderPlot({
+    
+    gge = model.GGE(dadosFiltrados())
+    
+    #====================================#
+    # Validacao
+    
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(gge),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    grafico.analiseGGE_OrdemDeGenotipo(gge)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Relacao entre ambientes"
+  output$grafico_analiseGGE_RelacaoEntreAmbientes = renderPlot({
+    
+    gge = model.GGE(dadosFiltrados())
+    
+    #====================================#
+    # Validacao
+    
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(gge),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    grafico.analiseGGE_RelacaoEntreAmbientes(gge)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Estabilidade / Media"
+  output$grafico_analiseGGE_EstabilidadeMedia = renderPlot({
+    
+    gge = model.GGE(dadosFiltrados())
+    
+    #====================================#
+    # Validacao
+    
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(gge),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    grafico.analiseGGE_EstabilidadeMedia(gge)
+  })
+  #==============================================#
+  
+  #==============================================#
+  # Grafico "Denograma"
+  output$grafico_analiseGGE_Denograma = renderPlot({
+    
+    deno = model.deno(dadosFiltrados())
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1 & !is.null(deno),
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    grafico.analiseGGE_Denograma(deno)
+  })
+  #==============================================#
+  
 }

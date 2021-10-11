@@ -24,6 +24,11 @@ app.LoadPackages = function()
     require(lme4)
     require(shinyWidgets)
     require(forcats)
+    require(plyr)
+    require(emmeans)
+    require(gge)
+    require(GGEBiplots)
+    require(ape)
     
     #==============================================#
 }

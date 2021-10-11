@@ -1,53 +1,181 @@
 #==============================================
+# Aba "analise gge"
+#==============================================
+tabItem.analiseGGE = function() {
+  tabItem(
+    tabName = "analise-gge",
+    tabBox(
+      width = "100%",
+      height = "90vh",
+      
+      tabPanel(
+        "Quem vence e aonde",
+        plotOutput(
+          "grafico_analiseGGE_QuemVenceEAonde",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
+      ),
+      
+      tabPanel(
+        "Ordem de ambiente",
+        plotOutput(
+          "grafico_analiseGGE_OrdemDeAmbiente",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
+      ),
+      
+      tabPanel(
+        "Ordem de genotipo",
+        plotOutput(
+          "grafico_analiseGGE_OrdemDeGenotipo",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
+      ),
+      
+      tabPanel(
+        "Relacao entre ambientes",
+        plotOutput("grafico_analiseGGE_RelacaoEntreAmbientes"),
+        width = "100%",
+        height = "85vh" %>% withSpinner(color = "#0dc5c1")
+      ),
+      
+      tabPanel(
+        "Estabilidade / Media",
+        plotOutput(
+          "grafico_analiseGGE_EstabilidadeMedia",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
+      ),
+      
+      tabPanel(
+        "Dendrograma",
+        plotOutput(
+          "grafico_analiseGGE_Denograma",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
+      )
+    )
+  )
+}
+
+#==============================================
 # Aba "Grafico linhas"
 #==============================================
-tabItem.graficoLinhas = function(){
+tabItem.graficoLinhas = function() {
   tabItem(tabName = "grafico-linhas",
-          box(width = 2,
-              selectInput("GenotipoSelectDoencas","Escolha os genotipos",selected = NULL,choices = NULL,multiple = T,selectize = T)
+          box(
+            width = 2,
+            selectInput(
+              "GenotipoSelectDoencas",
+              "Escolha os genotipos",
+              selected = NULL,
+              choices = NULL,
+              multiple = T,
+              selectize = T
+            )
           ),
-          box(width = 10,
-              plotOutput("graficolinha",width = "100%",height = "80vh")  %>% withSpinner(color="#0dc5c1")
-          )
-  )
+          box(
+            width = 10,
+            plotOutput("graficolinha", width = "100%", height = "80vh")  %>% withSpinner(color =
+                                                                                           "#0dc5c1")
+          ))
 }
 
 #==============================================
 # Aba "Analise estatistica"
 #==============================================
-tabItem.analiseEstatistica = function(){
-  
-  labelsName = c("tempMaxima_Maxima" ,"tempMaxima_Minima" ,"tempMaxima_Media" ,"tempMaxima_FLO_E" ,"tempMaxima_V" ,"tempMaxima_ACC_V" ,"tempMaxima_R" ,"tempMaxima_ACC_R" ,
-                 "tempMinima_Maxima" ,"tempMinima_Minima" ,"tempMinima_Media" ,"tempMinima_FLO_E" ,"tempMinima_V" ,"tempMinima_ACC_V" ,"tempMinima_R" ,"tempMinima_ACC_R" ,
-                 "precipitacao_ACC" ,"precipitacao_ACC_V" ,"precipitacao_ACC_R" ,
-                 "radiacao_ACC" ,"radiacao_ACC_V" ,"radiacao_ACC_R" ,
-                 "umidade_FLO_E", "umidade_Media", "umidade_V", "umidade_R",
-                 "vento_FLO_E", "vento_Media", "vento_V", "vento_R",
-                 "Acamamento" ,"Arquitetura" ,"Produtividade" ,"Antraquinose" ,"Crestamento bacteriano comum" ,"Mancha angular" ,"Mancha de curtobacterium")
+tabItem.analiseEstatistica = function() {
+  labelsName = c(
+    "tempMaxima_Maxima" ,
+    "tempMaxima_Minima" ,
+    "tempMaxima_Media" ,
+    "tempMaxima_FLO_E" ,
+    "tempMaxima_V" ,
+    "tempMaxima_ACC_V" ,
+    "tempMaxima_R" ,
+    "tempMaxima_ACC_R" ,
+    "tempMinima_Maxima" ,
+    "tempMinima_Minima" ,
+    "tempMinima_Media" ,
+    "tempMinima_FLO_E" ,
+    "tempMinima_V" ,
+    "tempMinima_ACC_V" ,
+    "tempMinima_R" ,
+    "tempMinima_ACC_R" ,
+    "precipitacao_ACC" ,
+    "precipitacao_ACC_V" ,
+    "precipitacao_ACC_R" ,
+    "radiacao_ACC" ,
+    "radiacao_ACC_V" ,
+    "radiacao_ACC_R" ,
+    "umidade_FLO_E",
+    "umidade_Media",
+    "umidade_V",
+    "umidade_R",
+    "vento_FLO_E",
+    "vento_Media",
+    "vento_V",
+    "vento_R",
+    "Acamamento" ,
+    "Arquitetura" ,
+    "Produtividade" ,
+    "Antraquinose" ,
+    "Crestamento bacteriano comum" ,
+    "Mancha angular" ,
+    "Mancha de curtobacterium"
+  )
   
   tabItem(tabName = "analise-estatistica",
           fluidRow(
-            
-            box( width = 2, status = "warning",
-                 
-                 # Seletor "Experimento"
-                 selectInput("select_analiseEstatistica_local", "selecione o local:", c("AL_TRA"), selected = "AL_TRA")
+            box(
+              width = 2,
+              status = "warning",
+              
+              # Seletor "Experimento"
+              selectInput(
+                "select_analiseEstatistica_local",
+                "selecione o local:",
+                c("AL_TRA"),
+                selected = "AL_TRA"
+              )
             ),
             
-            box( width = 10,height = "45vh",
-                 plotOutput("grafico_analiseEstatistica_Heatmap",width = "100%",height = "40vh") %>% withSpinner(color="#0dc5c1")
+            box(
+              width = 10,
+              height = "45vh",
+              plotOutput(
+                "grafico_analiseEstatistica_Heatmap",
+                width = "100%",
+                height = "40vh"
+              ) %>% withSpinner(color = "#0dc5c1")
             ),
             
-            box( width = 6,height = "45vh",
-                 plotOutput("grafico_analiseEstatistica_Resumo",width = "100%",height = "40vh") %>% withSpinner(color="#0dc5c1")
+            box(
+              width = 6,
+              height = "45vh",
+              plotOutput(
+                "grafico_analiseEstatistica_Resumo",
+                width = "100%",
+                height = "40vh"
+              ) %>% withSpinner(color = "#0dc5c1")
             ),
             
-            box( width = 6,height = "45vh",
-                 plotOutput("grafico_analiseEstatistica_Unitario",width = "100%",height = "40vh") %>% withSpinner(color="#0dc5c1")
-            )    
+            box(
+              width = 6,
+              height = "45vh",
+              plotOutput(
+                "grafico_analiseEstatistica_Unitario",
+                width = "100%",
+                height = "40vh"
+              ) %>% withSpinner(color = "#0dc5c1")
+            )
             
-          )
-  )
+          ))
 }
 
 #==============================================
@@ -110,22 +238,27 @@ doencas.sidebar = function() {
         icon = icon("line-chart"),
         menuSubItem("Heatmap", tabName = "analise-estatistica"),
         menuSubItem("Grafico Linhas", tabName = "grafico-linhas")
+      ),
+      menuSubItem(
+        "Analise GGE",
+        tabName = "analise-gge",
+        icon = icon("line-chart")
       )
     ),
     menuItem(
       text = "Variaveis",
       icon = icon("hand-point-up"),
       selectInput(
+        inputId = "culturaInputDoencas",
+        label = "Selecione a cultura:",
+        choices = "Todos"
+      ),
+      selectInput(
         inputId = "safraInputDoencas",
         label = "Selecione a safra:",
         choices = "Todos",
         multiple = T,
         selectize = T
-      ),
-      selectInput(
-        inputId = "culturaInputDoencas",
-        label = "Selecione a cultura:",
-        choices = "Todos"
       ),
       selectInput(
         inputId = "estadoInputDoencas",
@@ -199,11 +332,14 @@ doencasUI = div(id = "clima-container",
                   #========================================================
                   
                   #=======================body=============================
-                  dashboardBody(tabItems(
-                    tabItem.diagnostico(),
-                    tabItem.dadosPerdidos(),
-                    tabItem.analiseEstatistica(),
-                    tabItem.graficoLinhas()
-                  ))
+                  dashboardBody(
+                    tabItems(
+                      tabItem.diagnostico(),
+                      tabItem.dadosPerdidos(),
+                      tabItem.analiseEstatistica(),
+                      tabItem.graficoLinhas(),
+                      tabItem.analiseGGE()
+                    )
+                  )
                   #========================================================
                 ))

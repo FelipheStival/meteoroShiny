@@ -178,7 +178,8 @@ grafico.diaSecoUmido = function(tabela,
 #======================================================================
 # Grafico anomalia temperatura
 #======================================================================
-grafico.anomalia.temperatura = function(data_inv, municipio, meses) {
+grafico.anomalia.temperatura = function(data_inv, municipio, meses, nomesMeses) {
+  
   #criando grafico
   data_inv_p = mutate(data_inv, pr_anom = pr_anom * -1)
   bglab = data.frame(
@@ -266,7 +267,7 @@ grafico.anomalia.temperatura = function(data_inv, municipio, meses) {
     scale_fill_manual(values = c("black", "white")) +
     scale_colour_manual(values = rev(c("black", "white"))) +
     labs(
-      title = sprintf("Anomalias Aguas %s em %s",meses, municipio),
+      title = sprintf("Anomalias Aguas de %s em %s", nomesMeses, municipio),
       caption = "Data: Embrapa\ periodo 1980-2020"
     ) +
     theme_bw()
@@ -290,21 +291,23 @@ grafico.GraficoAnomalia = function(cidade,
     filter(cidade_nome == cidade) %>%
     mutate(DATE = ymd(data),
            RR = ifelse(precip == -9999, NA, precip / 10)) %>%
-    select(DATE, RR) %>%
-    rename(date = DATE, pr = RR)
+    select(DATE, RR) 
+  
+  names(dados) = c('date','pr')
   
   dados = dados[!is.na(dados$pr), ]
   
   dados <-
+    dados %>%
     mutate(dados, mo = month(date, label = TRUE), yr = year(date)) %>%
     filter(date >= min(dados$date)) %>%
     group_by(yr, mo) %>%
-    summarise(prs = sum(pr, na.rm = TRUE))
+    dplyr::summarise(prs = sum(pr, na.rm = TRUE))
   
   pr_ref <-
     filter(dados, yr > min(dados$yr), yr <= max(dados$yr)) %>%
     group_by(mo) %>%
-    summarise(pr_ref = mean(prs))
+    dplyr::summarise(pr_ref = mean(prs))
   
   dados <- left_join(dados, pr_ref, by = "mo")
   
@@ -342,7 +345,7 @@ grafico.GraficoAnomalia = function(cidade,
   Filter_rbind = rbind(Filter_ano_um, Filter_ano_dois)
   
   data_norm <-  group_by(dados, mo) %>%
-    summarise(
+    dplyr::summarise(
       mx = max(anom),
       min = min(anom),
       q25 = quantile(anom, .25),

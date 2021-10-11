@@ -170,7 +170,7 @@ grafico.provider.dadosPrec = function(dados, meses) {
     #sumarizando variaveis
     data_inv = data %>%
       group_by(safra) %>%
-      summarise(pr = sum(pr, na.rm = TRUE),
+      dplyr::summarise(pr = sum(pr, na.rm = TRUE),
                 ta = mean(ta, na.rm = TRUE))
     
     #calculando anomalia variaveis
@@ -200,7 +200,7 @@ grafico.provider.dadosPrec = function(dados, meses) {
     #sumarizando variaveis
     data_inv = data %>%
       group_by(winter_yr) %>%
-      summarise(pr = sum(pr, na.rm = TRUE),
+      dplyr::summarise(pr = sum(pr, na.rm = TRUE),
                 ta = mean(ta, na.rm = TRUE))
     
     #calculando anomalia variaveis
@@ -348,4 +348,31 @@ provider.meses.analises = function(inputAnomalia){
   )
   return(meses)
 }
+
+#==================================================================
+# Metodo para obter as legendas das analises
+#==================================================================
+provider.meses.analises.nomes = function(inputAnomalia){
+  legenda = NULL
+  switch (
+    inputAnomalia,
+    "Safra" = {
+      legenda = 'Out a Mar'
+    },
+    "Outono" = {
+      legenda = 'Abr a Jun'
+    },
+    "Inverno" = {
+      legenda = 'Jul a Set'
+    },
+    "Primavera" = {
+      legenda = 'Out a Dez'
+    },
+    "Verao" = {
+      legenda = 'Jan a Mar'
+    }
+  )
+  return(legenda)
+}
+
 
