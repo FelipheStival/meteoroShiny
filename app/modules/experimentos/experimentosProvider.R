@@ -450,13 +450,8 @@ model.Values = function(tabela) {
       W = unique(tabela[, c(2, 5)])
       Y = merge(y, W, by = "id_ensaio")
       
-      lastNumber = sapply(Y$id_ensaio, function(id) {
-        id = as.character(id)
-        tamanho = nchar(id)
-        return(substr(id, tamanho - 2, tamanho))
-      })
       
-      Y$id_gge = sprintf("%s_%s", Y$local, lastNumber)
+      Y$id_gge = Y$local
       
       return(Y)
     },
@@ -474,7 +469,7 @@ model.deno = function(tabela) {
     tryCatch(
       expr = {
         
-        Ym = acast(Y,genotipo~id_ensaio, value.var="emmean")
+        Ym = acast(Y,genotipo ~ id_gge, value.var="emmean")
         ysea = t(gge(Ym)$x)
         
         dd = dist(ysea, method = "euclidean")
