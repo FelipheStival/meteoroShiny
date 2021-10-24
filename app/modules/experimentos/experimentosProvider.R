@@ -308,7 +308,7 @@ service.getY = function(tabela) {
     trait = "produtividade",
     gid = "genotipo",
     rep = "repeticao",
-    year = "ano",
+    year = "safra",
     site = "local",
     df = tabela
   )

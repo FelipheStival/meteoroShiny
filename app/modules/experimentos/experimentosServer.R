@@ -18,6 +18,18 @@ doencaServer = function(input, output, session) {
     return(dados)
   })
   
+  # dados analise estatistica
+  dadosEstatistica = reactive({
+    y = service.getY(dadosFiltrados())
+    return(y)
+  })
+  
+  # dados analise estatistica media
+  dadosEstatisticaMedia = reactive({
+    y = service.getMean(dadosFiltrados(), input)
+    return(y)
+  })
+  
   # Atualizando input cultura
   observe({
     culturas = experimentos.provider.unique(dadosEnsaios(), 'cultura')
@@ -40,7 +52,7 @@ doencaServer = function(input, output, session) {
     ) 
   })
   
-  # Atualizando input estados
+  # Atualizando input estado
   observe({
     estados = experimentos.provider.unique(dadosEnsaios(), 'estado')
     updateSelectInput(
@@ -100,8 +112,8 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "GenotipoSelectDoencas",
-      choices = c("Todos", genotipos),
-      selected = "Todos"
+      choices = genotipos,
+      selected = genotipos[1]
     )
   })
   
@@ -177,10 +189,7 @@ doencaServer = function(input, output, session) {
            "Nao ha dados suficientes para exibicao do grafico.")
     )
     #====================================#
-    
-    y = service.getY(dadosFiltrados())
-    
-    grafico.analiseEstatistica_Resumo(y)
+    grafico.analiseEstatistica_Resumo(dadosEstatistica(), input$GenotipoSelectExperimentosMedia)
   })
   #==============================================#
   
@@ -198,8 +207,9 @@ doencaServer = function(input, output, session) {
     )
     #====================================#
     
-    y = service.getY(dadosFiltrados())
-    grafico.analiseEstatistica_Unitario(y, input$select_analiseEstatistica_local)
+    grafico.analiseEstatistica_Unitario(dadosEstatistica(),
+                                        input$select_analiseEstatistica_local,
+                                        input$GenotipoSelectExperimentosMedia)
     
   })
   #==============================================#
@@ -218,9 +228,7 @@ doencaServer = function(input, output, session) {
     )
     #====================================#
     
-    y = service.getY(dadosFiltrados())
-    
-    grafico.analiseEstatistica_Heatmap(y)
+    grafico.analiseEstatistica_Heatmap(dadosEstatistica())
     
   })
   #==============================================#
@@ -238,8 +246,8 @@ doencaServer = function(input, output, session) {
            "Nao ha dados suficientes para exibicao do grafico.")
     )
     
-    y = service.getMean(dadosFiltrados(), input)
-    grafico.GraficoLinhas(y)
+    grafico.GraficoLinhas(dadosEstatisticaMedia())
+    
   })
   
   #==============================================#
@@ -365,5 +373,30 @@ doencaServer = function(input, output, session) {
     grafico.analiseGGE_Denograma(deno)
   })
   #==============================================#
+  
+  #==============================================#
+  # Download relatorio"
+  output$downloadRelatorio = downloadHandler(
+    
+    filename = function() {
+      paste("my-report", sep = ".", switch(
+        input$inputRelatorioFormato, PDF = "pdf", HTML = "html", Word = "docx"
+      ))
+    },
+    
+    content = function(file) {
+      src <- normalizePath("report.Rmd")
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, "report.Rmd", overwrite = TRUE)
+      
+      out <- render("report.Rmd", switch(
+        input$inputRelatorioFormato,
+        PDF = pdf_document(), HTML = html_document(), Word = word_document()
+      ))
+      
+      file.rename(out, file)
+    }
+  )
   
 }

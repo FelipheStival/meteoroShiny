@@ -267,7 +267,7 @@ grafico.anomalia.temperatura = function(data_inv, municipio, meses, nomesMeses) 
     scale_fill_manual(values = c("black", "white")) +
     scale_colour_manual(values = rev(c("black", "white"))) +
     labs(
-      title = sprintf("Anomalias Aguas de %s em %s", nomesMeses, municipio),
+      title = sprintf("Anomalias de %s em %s", nomesMeses, municipio),
       caption = "Data: Embrapa\ periodo 1980-2020"
     ) +
     theme_bw()

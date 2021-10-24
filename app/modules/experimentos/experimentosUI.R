@@ -37,9 +37,11 @@ tabItem.analiseGGE = function() {
       
       tabPanel(
         "Relacao entre ambientes",
-        plotOutput("grafico_analiseGGE_RelacaoEntreAmbientes"),
-        width = "100%",
-        height = "85vh" %>% withSpinner(color = "#0dc5c1")
+        plotOutput(
+          "grafico_analiseGGE_RelacaoEntreAmbientes",
+          width = "100%",
+          height = "85vh"
+        ) %>% withSpinner(color = "#0dc5c1")
       ),
       
       tabPanel(
@@ -64,6 +66,21 @@ tabItem.analiseGGE = function() {
 }
 
 #==============================================
+# Aba "heatmap"
+#==============================================
+tabItem.graficoHeatMap = function() {
+  tabItem(tabName = "analise-hetmap",
+          box(
+            width = 12,
+            plotOutput(
+              "grafico_analiseEstatistica_Heatmap",
+              width = "100%",
+              height = "85vh"
+            ) %>% withSpinner(color = "#0dc5c1")
+          ))
+}
+
+#==============================================
 # Aba "Grafico linhas"
 #==============================================
 tabItem.graficoLinhas = function() {
@@ -81,8 +98,7 @@ tabItem.graficoLinhas = function() {
           ),
           box(
             width = 10,
-            plotOutput("graficolinha", width = "100%", height = "80vh")  %>% withSpinner(color =
-                                                                                           "#0dc5c1")
+            plotOutput("graficolinha", width = "100%", height = "80vh")  %>% withSpinner(color = "#0dc5c1")
           ))
 }
 
@@ -90,92 +106,71 @@ tabItem.graficoLinhas = function() {
 # Aba "Analise estatistica"
 #==============================================
 tabItem.analiseEstatistica = function() {
-  labelsName = c(
-    "tempMaxima_Maxima" ,
-    "tempMaxima_Minima" ,
-    "tempMaxima_Media" ,
-    "tempMaxima_FLO_E" ,
-    "tempMaxima_V" ,
-    "tempMaxima_ACC_V" ,
-    "tempMaxima_R" ,
-    "tempMaxima_ACC_R" ,
-    "tempMinima_Maxima" ,
-    "tempMinima_Minima" ,
-    "tempMinima_Media" ,
-    "tempMinima_FLO_E" ,
-    "tempMinima_V" ,
-    "tempMinima_ACC_V" ,
-    "tempMinima_R" ,
-    "tempMinima_ACC_R" ,
-    "precipitacao_ACC" ,
-    "precipitacao_ACC_V" ,
-    "precipitacao_ACC_R" ,
-    "radiacao_ACC" ,
-    "radiacao_ACC_V" ,
-    "radiacao_ACC_R" ,
-    "umidade_FLO_E",
-    "umidade_Media",
-    "umidade_V",
-    "umidade_R",
-    "vento_FLO_E",
-    "vento_Media",
-    "vento_V",
-    "vento_R",
-    "Acamamento" ,
-    "Arquitetura" ,
-    "Produtividade" ,
-    "Antraquinose" ,
-    "Crestamento bacteriano comum" ,
-    "Mancha angular" ,
-    "Mancha de curtobacterium"
+  tabItem(
+    tabName = "analise-estatistica",
+    column(
+      width = 3,
+      box(
+        width = 12,
+        status = "warning",
+        
+        # Seletor "Experimento"
+        selectInput(
+          "select_analiseEstatistica_local",
+          "selecione o local:",
+          c("AL_TRA"),
+          selected = "AL_TRA"
+        ),
+        
+        # Selecao valores media
+        selectInput(
+          "GenotipoSelectExperimentosMedia",
+          "Filtro",
+          choices = c("Acima da media" = "above",
+                      "Abaixo da media" = "below"),
+          selected = "Acima da media",
+        )
+      ),
+      box(
+        title = "Download relatorio",
+        width = 12,
+        status = "warning",
+        radioButtons(
+          "inputRelatorioFormato",
+          "Formato relatorio:",
+          c("PDF" = "PDF", "HTML" = "HTML", "WORD" = "Word"),
+          inline = T
+        ),
+        downloadButton('downloadRelatorio', label = "Relatório", class = NULL)
+      )
+    ),
+    column(
+      width = 9,
+      tabName = "analise-gge",
+      tabBox(
+        width = "100%",
+        height = "90vh",
+        
+        tabPanel(
+          "Grafico 1",
+          plotOutput(
+            "grafico_analiseEstatistica_Resumo",
+            width = "100%",
+            height = "80vh"
+          ) %>% withSpinner(color = "#0dc5c1"),
+        ),
+        tabPanel(
+          "Grafico 2",
+          plotOutput(
+            "grafico_analiseEstatistica_Unitario",
+            width = "100%",
+            height = "80vh"
+          ) %>% withSpinner(color = "#0dc5c1")
+        )
+        
+      )
+    )
   )
-  
-  tabItem(tabName = "analise-estatistica",
-          fluidRow(
-            box(
-              width = 2,
-              status = "warning",
-              
-              # Seletor "Experimento"
-              selectInput(
-                "select_analiseEstatistica_local",
-                "selecione o local:",
-                c("AL_TRA"),
-                selected = "AL_TRA"
-              )
-            ),
-            
-            box(
-              width = 10,
-              height = "45vh",
-              plotOutput(
-                "grafico_analiseEstatistica_Heatmap",
-                width = "100%",
-                height = "40vh"
-              ) %>% withSpinner(color = "#0dc5c1")
-            ),
-            
-            box(
-              width = 6,
-              height = "45vh",
-              plotOutput(
-                "grafico_analiseEstatistica_Resumo",
-                width = "100%",
-                height = "40vh"
-              ) %>% withSpinner(color = "#0dc5c1")
-            ),
-            
-            box(
-              width = 6,
-              height = "45vh",
-              plotOutput(
-                "grafico_analiseEstatistica_Unitario",
-                width = "100%",
-                height = "40vh"
-              ) %>% withSpinner(color = "#0dc5c1")
-            )
-            
-          ))
 }
 
 #==============================================
@@ -201,8 +196,7 @@ tabItem.diagnostico = function() {
     tabName = "diagnostico",
     box(
       width = 12,
-      scatterD3Output("grafico_diagnostico_Contagem")  %>% withSpinner(color =
-                                                                         "#0dc5c1")
+      scatterD3Output("grafico_diagnostico_Contagem")  %>% withSpinner(color = "#0dc5c1")
     ),
     box(
       width = 12 ,
@@ -236,7 +230,8 @@ doencas.sidebar = function() {
         "Analise Estatistica",
         tabName = "Container-analise-estatistica",
         icon = icon("line-chart"),
-        menuSubItem("Heatmap", tabName = "analise-estatistica"),
+        menuSubItem("Analise", tabName = "analise-estatistica"),
+        menuSubItem("Heatmap", tabName = "analise-hetmap"),
         menuSubItem("Grafico Linhas", tabName = "grafico-linhas")
       ),
       menuSubItem(
@@ -338,7 +333,8 @@ doencasUI = div(id = "clima-container",
                       tabItem.dadosPerdidos(),
                       tabItem.analiseEstatistica(),
                       tabItem.graficoLinhas(),
-                      tabItem.analiseGGE()
+                      tabItem.analiseGGE(),
+                      tabItem.graficoHeatMap()
                     )
                   )
                   #========================================================

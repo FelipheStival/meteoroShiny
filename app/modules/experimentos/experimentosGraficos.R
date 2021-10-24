@@ -55,7 +55,7 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Resumo"
-grafico.analiseEstatistica_Resumo = function(tabela) {
+grafico.analiseEstatistica_Resumo = function(tabela, mediaApresentar) {
   
   Y1 = data.frame(tabela[[1]])
   model.mean = as.numeric(tabela[[2]])
@@ -70,6 +70,8 @@ grafico.analiseEstatistica_Resumo = function(tabela) {
   sub = sprintf("h2: %s, Produtividade media: %s",
                 round(correlation[[1]], 2) ,
                 round(model.mean, 2))
+  
+  Y1 = Y1[Y1$type == mediaApresentar,]
   
   ggplot(Y1, aes(
     x = fct_reorder(gid, mean),
@@ -90,7 +92,8 @@ grafico.analiseEstatistica_Resumo = function(tabela) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Unitario"
-grafico.analiseEstatistica_Unitario = function(tabela, site = "") {
+grafico.analiseEstatistica_Unitario = function(tabela, site = "", mediaApresentar) {
+  
   Y1 = data.frame(tabela[[1]])
   if (site == "") {
     site = unique(Y1$site)
@@ -111,6 +114,7 @@ grafico.analiseEstatistica_Unitario = function(tabela, site = "") {
   
   sub = sprintf("Analise individual: %s", site)
   
+  solo = solo[solo$type == mediaApresentar,]
   
   ggplot(solo, aes(
     x = fct_reorder(gid_plot, mean),
@@ -231,6 +235,6 @@ grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
 # Aba "Analise GGE"
 # Grafico "Denograma"
 grafico.analiseGGE_Denograma = function(deno) {
-  plot(as.phylo(deno), cex = 0.7, label.offset = 0.7)
+  plot(as.phylo(deno), cex = 0.7, label.offset = 0.7, width = 10)
 }
 #==============================================#

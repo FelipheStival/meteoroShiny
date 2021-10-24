@@ -1,0 +1,52 @@
+---
+title: "Fundação ABC"
+# subtitle: "Sous-titre"
+author: "Embrapa Arroz e Feijão"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+always_allow_html: yes
+# toc: true
+---
+
+# Variáveis selecionadas
+
+```{r, echo=FALSE}
+criarInfomacoes = function(){
+  variaveis = data.frame(
+    Variaveis = c(
+      "Cultura",
+      "Safra",
+      "Estado",
+      "Cidade",
+      "irrigacao",
+      "Fungicida",
+      "Tipo de grao",
+      "Epoca"
+    ),
+    Teste = c(
+       input$culturaInputDoencas,
+       input$safraInputDoencas,
+       input$estadoInputDoencas,
+       input$cidadeInputDoencas,
+       input$irrigacaoInputDoencas,
+       input$fungicidaInputDoencas,
+       input$tipodegraoInputDoencas,
+       input$epocaInputDoencas
+    ),
+    stringsAsFactors = F
+  )
+  return(variaveis)
+  
+}
+
+kable(criarInfomacoes(), caption = "Variáveis selecionadas")
+  
+```
+
+# Data
+
+```{r, echo=FALSE, warning = FALSE}
+dadosGenotipos = dadosEstatisticaMedia()
+
+paged_table(dadosGenotipos)
+
+```

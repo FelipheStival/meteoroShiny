@@ -29,6 +29,9 @@ app.LoadPackages = function()
     require(gge)
     require(GGEBiplots)
     require(ape)
+    require(rmarkdown)
+    require(knitr)
+    require(tinytex)
     
     #==============================================#
 }
