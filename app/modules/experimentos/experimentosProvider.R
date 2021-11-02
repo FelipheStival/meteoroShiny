@@ -119,11 +119,18 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
   filtrado = dados
   
   # Checando todos
+  indexCultura = which(input[['culturaInputDoencas']] == "Todos")
   indexCidade = which(input[['cidadeInputDoencas']] == "Todos")
   indexEstado = which(input[['estadoInputDoencas']] == "Todos")
   indexTipoGrao = which(input[['tipodegraoInputDoencas']] == "Todos")
   indexEpoca = which(input[['epocaInputDoencas']] == "Todos")
   indexSafra = which(input[['safraInputDoencas']] == "Todos")
+  
+  
+  # Filtrando cultura
+  if(length(indexCultura) == 0 & !is.null(input$culturaInputDoencas)){
+    filtrado = filtrado[filtrado$cultura %in% input$culturaInputDoencas,]
+  }
   
   # Filtrando cidade
   if(length(indexCidade) == 0 & !is.null(input$cidadeInputDoencas)){
@@ -302,17 +309,26 @@ service.getDiagostico = function(tabela) {
 }
 
 service.getY = function(tabela) {
-  tabela$ano = as.Date(tabela$data_semeadura)
-  tabela$ano = format(tabela$ano, "%Y")
-  Y = y.matrix.2(
-    trait = "produtividade",
-    gid = "genotipo",
-    rep = "repeticao",
-    year = "safra",
-    site = "local",
-    df = tabela
+  tryCatch(
+    expr = {
+      tabela$ano = as.Date(tabela$data_semeadura)
+      tabela$ano = format(tabela$ano, "%Y")
+      Y = y.matrix.2(
+        trait = "produtividade",
+        gid = "genotipo",
+        rep = "repeticao",
+        year = "safra",
+        site = "local",
+        df = tabela
+      )
+      return(Y)
+    },
+    error = function(e){ 
+      msg = paste("Erro",e,sep = ":")
+      cat(msg)
+      return(NULL)
+    }
   )
-  return(Y)
 }
 
 service.getMean = function(tabela, input) {
@@ -322,7 +338,7 @@ service.getMean = function(tabela, input) {
   
   t1 = Y1 %>%
     group_by(gid, site) %>%
-    dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
+    dplyr::summarize(mean = mean(y, na.rm = TRUE))
   
   t1 = data.frame(t1)
   
@@ -350,27 +366,91 @@ y.matrix.2 = function(df,trait,rep,site, gid, year){
   
   dataset = df[,c(trait, rep, site, gid, year)]
   names(dataset) = c("trait","rep", "site", "gid", "year")
+  yearBackup = unique(dataset$year)
+  siteBackup = unique(dataset$site)
   
   r = length(unique(dataset$rep))
   y = length(unique(dataset$year))
   s = length(unique(dataset$site))
   
-  mix.model.an = lmer(trait~rep:site:year+(1|gid)+(1|gid:site) + (1|gid:year) + (1|gid:site:year),data= dataset)
   
-  rn = ranef(mix.model.an)
-  
-  g = convertModel(rn$"gid", c("gid", "g.hat"))
-  gy = convertModel(rn$"gid:year", c("gid","year", "gy.hat"))
-  gl = convertModel(rn$"gid:site", c("gid","site", "gl.hat"))
-  gly = convertModel(rn$"gid:site:year", c("gid","site","year", "gly.hat"))
-  
-  resposta = merge(g, gy, by = c("gid"))
-  resposta = merge(resposta, gl, by = c("gid"))
-  resposta = merge(resposta, gly, by = c("gid","site","year"))
+  if(length(unique(dataset$site)) > 1){
+    
+    if(length(unique(dataset$year)) > 1){
+      
+      
+      mix.model.an = lmer(trait~rep:site:year+(1|gid)+(1|gid:site) + (1|gid:year) + (1|gid:site:year),data= dataset)
+      
+      rn = ranef(mix.model.an)
+      
+      g = convertModel(rn$"gid", c("gid", "g.hat"))
+      gy = convertModel(rn$"gid:year", c("gid","year", "gy.hat"))
+      gl = convertModel(rn$"gid:site", c("gid","site", "gl.hat"))
+      gly = convertModel(rn$"gid:site:year", c("gid","site","year", "gly.hat"))
+      
+      resposta = merge(g, gy, by = c("gid"))
+      resposta = merge(resposta, gl, by = c("gid"))
+      resposta = merge(resposta, gly, by = c("gid","site","year")) 
+      
+    } else {
+      
+      mix.model.an = lmer(trait~rep:site + (1|gid)+(1|gid:site),data= dataset)
+      
+      rn = ranef(mix.model.an)
+      
+      g = convertModel(rn$"gid", c("gid", "g.hat"))
+      gy = convertModel(rn$"gid", c("gid", "gy.hat"))
+      gl = convertModel(rn$"gid:site", c("gid","site", "gl.hat"))
+      gly = convertModel(rn$"gid:site", c("gid","site", "gly.hat"))
+      
+      resposta = merge(g, gy, by = c("gid"))
+      resposta = merge(resposta, gl, by = c("gid"))
+      resposta = merge(resposta, gly, by = c("gid","site")) 
+      resposta$year = yearBackup
+    }
+    
+  } else {
+    
+    if(length(unique(dataset$year)) > 1){
+      
+      mix.model.an = lmer(trait~rep:year+(1|gid) + (1|gid:year) + (1|gid:year),data= dataset)
+      
+      rn = ranef(mix.model.an)
+      
+      g = convertModel(rn$"gid", c("gid", "g.hat"))
+      gy = convertModel(rn$"gid:year", c("gid","year", "gy.hat"))
+      gl = convertModel(rn$"gid", c("gid", "gl.hat"))
+      gly = convertModel(rn$"gid:year", c("gid","year", "gly.hat"))
+      
+      resposta = merge(g, gy, by = c("gid"))
+      resposta = merge(resposta, gl, by = c("gid"))
+      resposta = merge(resposta, gly, by = c("gid","year")) 
+      resposta$site = siteBackup
+      
+    } else {
+      
+      mix.model.an = lmer(trait~rep +(1|gid),data= dataset)
+      
+      rn = ranef(mix.model.an)
+      
+      g = convertModel(rn$"gid", c("gid", "g.hat"))
+      gy = convertModel(rn$"gid", c("gid", "gy.hat"))
+      gl = convertModel(rn$"gid", c("gid", "gl.hat"))
+      gly = convertModel(rn$"gid", c("gid", "gly.hat"))
+      
+      resposta = merge(g, gy, by = c("gid"))
+      resposta = merge(resposta, gl, by = c("gid"))
+      resposta = merge(resposta, gly, by = c("gid"))
+      resposta$site = siteBackup
+      resposta$year = yearBackup
+      
+    }
+    
+  }
   
   fn = fixef(mix.model.an)[1]
-  
   resposta$y = resposta$g.hat + resposta$gl.hat + resposta$gy.hat + resposta$gly.hat + fn
+  resposta = resposta[,c('gid','site','year','g.hat','gy.hat','gl.hat','gly.hat','y')]
   
   hat_table = resposta[,4:7]
   resposta$y.cor = apply(hat_table, 1, function(x) {

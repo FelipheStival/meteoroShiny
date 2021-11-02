@@ -71,7 +71,9 @@ grafico.analiseEstatistica_Resumo = function(tabela, mediaApresentar) {
                 round(correlation[[1]], 2) ,
                 round(model.mean, 2))
   
-  Y1 = Y1[Y1$type == mediaApresentar,]
+  if(mediaApresentar != "Todos"){
+    Y1 = Y1[Y1$type == mediaApresentar,] 
+  }
   
   ggplot(Y1, aes(
     x = fct_reorder(gid, mean),
@@ -114,7 +116,9 @@ grafico.analiseEstatistica_Unitario = function(tabela, site = "", mediaApresenta
   
   sub = sprintf("Analise individual: %s", site)
   
-  solo = solo[solo$type == mediaApresentar,]
+  if(mediaApresentar != "Todos"){
+    solo = solo[solo$type == mediaApresentar,] 
+  }
   
   ggplot(solo, aes(
     x = fct_reorder(gid_plot, mean),

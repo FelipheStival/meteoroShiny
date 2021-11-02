@@ -127,7 +127,8 @@ tabItem.analiseEstatistica = function() {
           "GenotipoSelectExperimentosMedia",
           "Filtro",
           choices = c("Acima da media" = "above",
-                      "Abaixo da media" = "below"),
+                      "Abaixo da media" = "below",
+                      "Todos" = "Todos"),
           selected = "Acima da media",
         )
       ),
@@ -138,7 +139,7 @@ tabItem.analiseEstatistica = function() {
         radioButtons(
           "inputRelatorioFormato",
           "Formato relatorio:",
-          c("PDF" = "PDF", "HTML" = "HTML", "WORD" = "Word"),
+          c("HTML" = "HTML"),
           inline = T
         ),
         downloadButton('downloadRelatorio', label = "Relatório", class = NULL)
@@ -152,7 +153,7 @@ tabItem.analiseEstatistica = function() {
         height = "90vh",
         
         tabPanel(
-          "Grafico 1",
+          "Gráfico media geral",
           plotOutput(
             "grafico_analiseEstatistica_Resumo",
             width = "100%",
@@ -160,7 +161,7 @@ tabItem.analiseEstatistica = function() {
           ) %>% withSpinner(color = "#0dc5c1"),
         ),
         tabPanel(
-          "Grafico 2",
+          "Gráfico media local",
           plotOutput(
             "grafico_analiseEstatistica_Unitario",
             width = "100%",
@@ -278,7 +279,7 @@ doencas.sidebar = function() {
       ),
       selectInput(
         inputId = "fungicidaInputDoencas",
-        label = "Selecione a fungicida: ",
+        label = "fungicida: ",
         choices = c("Sim" = "t",
                     "Nao" = "f"),
         selected = "Sim"

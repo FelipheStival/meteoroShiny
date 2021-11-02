@@ -182,14 +182,16 @@ doencaServer = function(input, output, session) {
     
     #====================================#
     # Validacao
-    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
     
     validate(
-      need(validate.ids_data > 1,
+      need(!is.null(dadosEstatistica()),
            "Nao ha dados suficientes para exibicao do grafico.")
     )
+    
     #====================================#
+    
     grafico.analiseEstatistica_Resumo(dadosEstatistica(), input$GenotipoSelectExperimentosMedia)
+    
   })
   #==============================================#
   
@@ -197,14 +199,15 @@ doencaServer = function(input, output, session) {
   # Grafico "Unitario"
   output$grafico_analiseEstatistica_Unitario = renderPlot({
     
+    
     #====================================#
     # Validacao
-    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
     
     validate(
-      need(validate.ids_data > 1,
+      need(!is.null(dadosEstatistica()),
            "Nao ha dados suficientes para exibicao do grafico.")
     )
+    
     #====================================#
     
     grafico.analiseEstatistica_Unitario(dadosEstatistica(),

@@ -1,6 +1,11 @@
 # Global server
 server = shinyServer(function(input, output, session) {
   
+  # Autenticacao
+  res_auth = secure_server(
+    check_credentials = check_credentials(credenciais)
+  )
+  
   # Router
   router$server(input, output, session)
   

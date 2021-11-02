@@ -6,6 +6,4 @@ router = make_router(
 )
 
 # Pagina reponsavel pelo redirecionamento.
-ui <- fluidPage(
-   router$ui
-)
+ui <- secure_app(fluidPage(router$ui))

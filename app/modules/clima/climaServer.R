@@ -19,13 +19,15 @@ mapaServer = function(input, output, session) {
   
   # Obter cidades
   observe({
-    cidades = provider.obterCidades(input$estadoInput)
-    updateSelectInput(
-      session = session,
-      inputId = "cidadeInput",
-      choices = cidades$nome,
-      selected = cidades$nome[1]
-    )
+    if(!is.null(input$estadoInput)){
+      cidades = provider.obterCidades(input$estadoInput)
+      updateSelectInput(
+        session = session,
+        inputId = "cidadeInput",
+        choices = cidades$nome,
+        selected = cidades$nome[1]
+      ) 
+    }
   })
   
   
