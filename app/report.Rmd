@@ -2,12 +2,49 @@
 title: "Fundação ABC"
 # subtitle: "Sous-titre"
 author: "Embrapa Arroz e Feijão"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`r format(Sys.time(), '%d de %B, %Y \n %H:%M:%S ')`"
 always_allow_html: yes
 # toc: true
 ---
 
-# Variáveis selecionadas
+
+
+```{css, echo=FALSE}
+    h1,h4{text-align:center;
+          font-weight: bold;
+          color: rgb(255,255,255);
+    }
+    
+.container-fluid.main-container {border-style: groove;}
+
+    div#header{
+          
+  background-color: rgb(0,102,153);
+  background-image: linear-gradient(to bottom right, rgb(0,102,153), rgb(0,153,102));
+    
+   
+    
+    }
+    
+    caption{text-align:center;
+          color: black;
+          font-weight: bold;
+          font-size: 35px;
+          }
+          
+    header{
+    border-style: solid;
+          background: rgb(204,204,204);
+    }
+      
+    thead{text-align:center;
+      background: rgb(76,175,80);
+      border-style: solid;
+    }
+    
+```
+
+
 
 ```{r, echo=FALSE}
 criarInfomacoes = function(){
@@ -22,7 +59,7 @@ criarInfomacoes = function(){
       "Tipo de grao",
       "Epoca"
     ),
-    Teste = c(
+    Selecionados = c(
        input$culturaInputDoencas,
        input$safraInputDoencas,
        input$estadoInputDoencas,
@@ -42,11 +79,11 @@ kable(criarInfomacoes(), caption = "Variáveis selecionadas")
   
 ```
 
-# Data
+Data
 
 ```{r, echo=FALSE, warning = FALSE}
 dadosGenotipos = dadosEstatisticaMedia()
-
+dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean,decreasing = T),]
 paged_table(dadosGenotipos)
 
 ```
