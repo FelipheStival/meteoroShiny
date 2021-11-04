@@ -82,8 +82,9 @@ kable(criarInfomacoes(), caption = "Variáveis selecionadas")
 Data
 
 ```{r, echo=FALSE, warning = FALSE}
-dadosGenotipos = dadosEstatisticaMedia()
-dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean,decreasing = T),]
+dadosGenotipos = service.getY(dadosFiltrados(), TRUE)
+dadosGenotipos = dadosGenotipos[,c("gid","fdfdfdfsdsd")]
+#dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean,decreasing = T),]
 paged_table(dadosGenotipos)
 
 ```

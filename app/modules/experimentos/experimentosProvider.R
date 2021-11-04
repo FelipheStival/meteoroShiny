@@ -308,9 +308,10 @@ service.getDiagostico = function(tabela) {
   }
 }
 
-service.getY = function(tabela) {
+service.getY = function(tabela, relatorio = FALSE) {
   tryCatch(
     expr = {
+      
       tabela$ano = as.Date(tabela$data_semeadura)
       tabela$ano = format(tabela$ano, "%Y")
       Y = y.matrix.2(
@@ -321,6 +322,10 @@ service.getY = function(tabela) {
         site = "local",
         df = tabela
       )
+      if(relatorio){
+        Y = Y$Adjusted.Means.df
+      }
+        
       return(Y)
     },
     error = function(e){ 
