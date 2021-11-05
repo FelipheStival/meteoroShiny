@@ -81,10 +81,21 @@ kable(criarInfomacoes(), caption = "Variáveis selecionadas")
 
 Data
 
-```{r, echo=FALSE, warning = FALSE}
+```{r, echo=FALSE, warning = FALSE, verify_fa = FALSE}
 dadosGenotipos = service.getY(dadosFiltrados(), TRUE)
-dadosGenotipos = dadosGenotipos[,c("gid","fdfdfdfsdsd")]
+
+
+options(DT.options = list(pageLength = 5, language = list(search = 'Filter:'), scrollX = TRUE))
+
+dadosGenotipos = dadosGenotipos[,c("gid","year", "y")]
+colnames(dadosGenotipos) <- c("Cultivar","Ano", " Media(BLUP)")                                
+
+dadosGenotipos = as.data.frame(dadosGenotipos) 
+                         
+
 #dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean,decreasing = T),]
-paged_table(dadosGenotipos)
+DT::datatable(dadosGenotipos)
+         
+          
 
 ```
