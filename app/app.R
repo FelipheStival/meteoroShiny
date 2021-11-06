@@ -33,6 +33,7 @@ app.LoadPackages = function()
     require(rmarkdown)
     require(knitr)
     require(tinytex)
+    require(DT)
     
     #==============================================#
 }

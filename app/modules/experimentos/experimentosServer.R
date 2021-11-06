@@ -30,6 +30,13 @@ doencaServer = function(input, output, session) {
     return(y)
   })
   
+  # dados para gear o relatorio
+  dadosRelatorio = reactive({
+    y = service.getY(dadosFiltrados())
+    y = model.dadosRelatorio(y)
+    return(y)
+  })
+  
   # Atualizando input cultura
   observe({
     culturas = experimentos.provider.unique(dadosEnsaios(), 'cultura')

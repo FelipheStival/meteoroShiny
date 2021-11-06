@@ -89,8 +89,6 @@ dadosGenotipos = dadosRelatorio()
 dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean, decreasing=TRUE),]
 dadosGenotipos$mean = round(dadosGenotipos$mean,2)
 
-
-
 # Criando tabela
 out = datatable(dadosGenotipos, style = 'bootstrap') %>%
    formatStyle('mean',
