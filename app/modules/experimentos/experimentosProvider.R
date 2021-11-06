@@ -572,10 +572,11 @@ model.deno = function(tabela) {
 
 #==============================================#
 model.dadosRelatorio = function(dadosRelatorio){
+  
   dadosRelatorio = as.data.frame(dadosRelatorio[[1]])
   
   dadosRelatorio = dadosRelatorio %>%
-    group_by(gid, site) %>%
+    group_by(gid, year) %>%
     dplyr::summarize(mean = mean(y, na.rm = TRUE))
   
   return(dadosRelatorio)
