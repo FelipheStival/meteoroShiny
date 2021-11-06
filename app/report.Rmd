@@ -45,6 +45,8 @@ always_allow_html: yes
 ```
 
 
+## Variáveis selecionadas
+***
 
 ```{r, echo=FALSE}
 criarInfomacoes = function(){
@@ -75,16 +77,28 @@ criarInfomacoes = function(){
   
 }
 
-kable(criarInfomacoes(), caption = "Variáveis selecionadas")
-  
+out = datatable(criarInfomacoes(), style = 'bootstrap')
+
+out  
 ```
 
 Data
 
 ```{r, echo=FALSE, warning = FALSE}
-dadosGenotipos = service.getY(dadosFiltrados(), TRUE)
-dadosGenotipos = dadosGenotipos[,c("gid","fdfdfdfsdsd")]
-#dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean,decreasing = T),]
-paged_table(dadosGenotipos)
+dadosGenotipos = dadosRelatorio()
+dadosGenotipos = dadosGenotipos[order(dadosGenotipos$mean, decreasing=TRUE),]
+dadosGenotipos$mean = round(dadosGenotipos$mean,2)
 
+
+
+# Criando tabela
+out = datatable(dadosGenotipos, style = 'bootstrap') %>%
+   formatStyle('mean',
+              background = styleColorBar(dadosGenotipos$mean, '#90EE90'),
+              backgroundSize = '95% 50%',
+              backgroundRepeat = 'no-repeat',
+              backgroundPosition = 'right')
+
+
+out
 ```
