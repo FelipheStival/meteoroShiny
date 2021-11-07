@@ -576,7 +576,7 @@ model.dadosRelatorio = function(dadosRelatorio){
   dadosRelatorio = as.data.frame(dadosRelatorio[[1]])
   
   dadosRelatorio = dadosRelatorio %>%
-    group_by(gid, year) %>%
+    group_by(gid) %>%
     dplyr::summarize(mean = mean(y, na.rm = TRUE))
   
   return(dadosRelatorio)
