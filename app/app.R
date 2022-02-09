@@ -5,7 +5,6 @@ app.LoadPackages = function()
 {
     #=============================================#
     # Iniciando bibliotecas web
-    
     require(shiny) 
     require(shinydashboard)
     require(shinymanager)
