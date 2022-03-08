@@ -33,6 +33,8 @@ app.LoadPackages = function()
     require(knitr)
     require(tinytex)
     require(DT)
+    require(shinythemes)
+    require(shinyalert)
     
     #==============================================#
 }
@@ -113,11 +115,21 @@ app.loadLabels = function(){
 #==============================================#
 # Carregando arquivos compilados
 app.LoadModules = function() {
-    modulos = list.files(pattern = ".R$",
+  
+    # Carregando modulos secundarios
+    modulos = list.files(path = 'modules',
+                         pattern = ".R$",
                          recursive = T,
-                         full.names = T)
-    index = which(modulos %in% "./app.R")
-    modulos = modulos[-index]
+                         full.names = T
+                         )
+    log = sapply(modulos,source,encoding="utf-8")
+    
+    # Carregando modulos principal
+    modulos = list.files(path = 'cor',
+                         pattern = ".R$",
+                         recursive = T,
+                         full.names = T
+    )
     log = sapply(modulos,source,encoding="utf-8")
 }
 #==============================================#

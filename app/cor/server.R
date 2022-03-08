@@ -23,4 +23,7 @@ server = shinyServer(function(input, output, session) {
   # Doenca Service
   doencaServer(input,output,session)
   
+  # Gerenciar Server
+  gerenciarServer(input, output, session)
+  
 })
