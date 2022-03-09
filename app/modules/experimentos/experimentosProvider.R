@@ -11,7 +11,7 @@ experimentos.provider.dados = function() {
 	   genotipos.nome as genotipo,
 	   safra,
 	   repeticao,
-	   produtividade,
+	   ROUND(produtividade,2) as produtividade,
 	   data_semeadura,
 	   data_emergencia,
 	   data_inicio_floracao,
