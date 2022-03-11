@@ -4,20 +4,36 @@
 inserirNovosDados = function(novosDados){
   
   # Verificacoes 
-  
-  
-  
   conexao = banco.provider.openConnection('ensaios')
   
-  novosDados$tratamento = NULL
-  novosDados$produtividade = as.numeric(novosDados$produtividade)
-  novosDados$produtividade = round(novosDados$produtividade, 2)
+  # Selecionando colunas para inserir
+  nomesColunas  = c(
+    'id_ensaio',
+    'safra',
+    'irrigacao',
+    'fungicida',
+    'repeticao',
+    'produtividade',
+    'data_semeadura',
+    'data_emergencia',
+    'data_inicio_floracao',
+    'data_inicio_ponto_colheita',
+    'data_inicio_colheita',
+    'epoca'
+  )
+  dadosInserir = novosDados[,nomesColunas]
+  NumeroLinhas = nrow(dadosInserir)
   
-  names(novosDados)[6] = 'produtividade'
+  # Lendo linha e transformando em Query
+  for(i in 1:NumeroLinhas){
+    linha = dadosInserir[i,]
+    
+    # Transformando em query e inserindo dados
+    query = sqlAppendTable(conexao, 'ensaios', linha)
+    dbSendUpdate(conexao, query)
+  }
   
-  sql = sqlAppendTable(conexao, 'ensaios', novosDados)
+  dbDisconnect(conexao)
   
-  dbSendStatement(conexao,sql)
-  
-  dbDisconnect(sql)
+  return(true)
 }
