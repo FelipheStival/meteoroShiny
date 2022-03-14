@@ -26,13 +26,13 @@ gerenciarServer = function(input, output, session) {
   observeEvent(input$salvarDados, {
     if(!is.null(dadosTabela())){
       
-        inserirNovosDados(dadosTabela())
-        
-        shinyalert(
-          title = 'Upload realizado com sucesso',
-          text = 'O banco de dados foi atualizado com sucesso',
-          type = "success"
-        )
+        if(inserirNovosDados(dadosTabela())){
+            shinyalert(
+              title = 'Upload realizado com sucesso',
+              text = 'O banco de dados foi atualizado com sucesso',
+              type = "success"
+            )
+        }
         
       
     } else {
