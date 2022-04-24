@@ -186,59 +186,37 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
 
 service.getDiagostico = function(tabela) {
   
-  tabela$repeticao = as.factor(tabela$repeticao)
-  diagnostico = TE1(
-    y = "produtividade",
-    trials = "id_ensaio",
-    gen = "genotipo",
-    rep = "repeticao",
-    accuracy = 0.3,
-    df = tabela
+  # Obtendo dados necessarios para gerar modelo
+  dadosModelo = tabela[,c("id_ensaio", "genotipo", "repeticao", "safra", "cidade", "local", "irrigacao","fungicida","estado","tipo_de_grao", "epoca", "produtividade")]
+  dadosModelo = na.exclude(dadosModelo)
+  
+  # Preparando dados
+  dadosModelo$repeticao = as.character(dadosModelo$repeticao)
+  dadosModelo$epoca = as.factor(dadosModelo$epoca)
+  dadosModelo$genotipo = as.factor(dadosModelo$genotipo)
+  dadosModelo$local = as.factor(dadosModelo$local)
+  
+  # Definindo o modelo de diagnostico dos experimentos
+  mdl_trials = lmer(produtividade ~ repeticao + (1|genotipo), data = dadosModelo, REML = TRUE)
+  
+  # Modelo linear (sem o efeito aleatório)
+  mdl_glm_trials = glm(produtividade ~ repeticao, data = dadosModelo, family = gaussian(link='identity'))
+  
+  # "genotipo" é a entrada da variável com efeito aleatório
+  # "repeticao" é a entrada como efeito fixo
+  tab_resultados = gera_tabela_por_trial(dadosModelo, mdl_trials, "repeticao", "genotipo")$tab
+  tab_resultados_glm = gera_tabela_por_trial_glm(dadosModelo, mdl_glm_trials, "repeticao")$tab
+  
+  # Obtemos assim os indicadores BLUE e BLUP
+  indicadores_bind = tibble(id_ensaio = tab_resultados$id_ensaio,
+                             `Yield (kg/ha, BLUP)` = round(tab_resultados$MediaPonderada,0), 
+                             `BIC (BLUP)` = round(tab_resultados$BIC,0),
+                             `Yield (kg/ha, BLUE)` = round(tab_resultados_glm$MediaPonderada,0), 
+                             `BIC (BLUE)` = round(tab_resultados_glm$BIC,0)
   )
   
-  if (!is.null(diagnostico)) {
-    
-    diagnostico$BLUE = round(as.numeric(diagnostico$BLUE),0)
-    diagnostico$MEDIA_ARITMETICA = round(as.numeric(diagnostico$MEDIA_ARITMETICA),0)
-    diagnostico$mean = round(as.numeric(as.character(diagnostico$mean)),0)
-    diagnostico$Vg = round(as.numeric(as.character(diagnostico$Vg)),0)
-    diagnostico$Vres = round(as.numeric(as.character(diagnostico$Vres)),0)
-    diagnostico$Vf = round(as.numeric(as.character(diagnostico$Vf)),2)
-    diagnostico$h2 = round(as.numeric(as.character(diagnostico$h2)),2)
-    diagnostico$rgg = round(as.numeric(as.character(diagnostico$rgg)),2)
-    diagnostico$CVg = round(as.numeric(as.character(diagnostico$CVg)),2)
-    diagnostico$CVe = round(as.numeric(as.character(diagnostico$CVe)),2)
-    diagnostico$CV = round(as.numeric(as.character(diagnostico$CV)),2)
-    diagnostico$CV = round(diagnostico$CV, 2)
-    
-    # Ordenando colunas
-    diagnostico = diagnostico[,c(
-      "CodigodoExperimento",
-      "mean",
-      "BLUE",
-      "MEDIA_ARITMETICA",
-      "Vg",
-      "Vres",
-      "Vf",
-      "h2",
-      "rgg",
-      "CVg",
-      "CVe",
-      "CV",
-      "Diagnostico"
-    )]
-    
-    # Renomeando colunas
-    names(diagnostico)[2] = "BLUP"
-    
-    # Ordenando colunas
-    diagnostico = diagnostico[order(diagnostico$Diagnostico),]
-    
-    return(diagnostico)
-    
-  } else {
-    return(NULL)
-  }
+  return(indicadores_bind)
+  
 }
 
 service.getY = function(tabela, relatorio = FALSE) {

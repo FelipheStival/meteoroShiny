@@ -196,10 +196,6 @@ tabItem.diagnostico = function() {
   tabItem(
     tabName = "diagnostico",
     box(
-      width = 12,
-      scatterD3Output("grafico_diagnostico_Contagem")  %>% withSpinner(color = "#0dc5c1")
-    ),
-    box(
       width = 12 ,
       dataTableOutput("tabela_diagnostico_Exibir") %>% withSpinner(color = "#0dc5c1")
     ),

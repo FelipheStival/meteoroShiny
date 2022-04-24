@@ -124,19 +124,6 @@ doencaServer = function(input, output, session) {
     )
   })
   
-  output$grafico_diagnostico_Contagem = renderScatterD3({
-    
-    diagnostico = service.getDiagostico(dadosFiltrados())
-    
-    validate(
-      need(!is.null(diagnostico), "Nao ha dados suficientes para exibicao do grafico.")
-    )
-
-    grafico.diagnostico_Contagem(diagnostico)
-    
-  })
-  
-  
   output$tabela_diagnostico_Exibir = renderDataTable({
     
     diagnostico = service.getDiagostico(dadosFiltrados())

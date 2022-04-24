@@ -4,6 +4,7 @@
 #=====================================================================
 bemVindoUI = function() {
   fluidPage(
+    includeCSS("www//styles//styles.css"),
     HTML("
     <div id = 'wave-background'>
       <div id = 'container'>
