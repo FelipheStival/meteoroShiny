@@ -126,7 +126,7 @@ doencaServer = function(input, output, session) {
   
   output$tabela_diagnostico_Exibir = renderDataTable({
     
-    diagnostico = service.getDiagostico(dadosFiltrados())
+    diagnostico = service.getDiagostico(dadosFiltrados(), input)
     
     validate(
       need(!is.null(diagnostico), "Nao ha dados suficientes para exibicao da tabela.")

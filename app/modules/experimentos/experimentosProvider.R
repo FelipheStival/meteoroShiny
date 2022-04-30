@@ -184,10 +184,10 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
   )
 }
 
-service.getDiagostico = function(tabela) {
+service.getDiagostico = function(tabela, inputUsuario) {
   
   # Obtendo dados necessarios para gerar modelo
-  dadosModelo = tabela[,c("id_ensaio", "genotipo", "repeticao", "safra", "cidade", "local", "irrigacao","fungicida","estado","tipo_de_grao", "epoca", "produtividade")]
+  dadosModelo = tabela[,c("id_ensaio", "genotipo", "repeticao", "safra", "cidade", "local", "irrigacao","fungicida","estado","tipo_de_grao", "epoca", "produtividade", "cidade")]
   dadosModelo = na.exclude(dadosModelo)
   
   # Preparando dados
@@ -208,11 +208,19 @@ service.getDiagostico = function(tabela) {
   tab_resultados_glm = gera_tabela_por_trial_glm(dadosModelo, mdl_glm_trials, "repeticao")$tab
   
   # Obtemos assim os indicadores BLUE e BLUP
-  indicadores_bind = tibble(id_ensaio = tab_resultados$id_ensaio,
-                             `Yield (kg/ha, BLUP)` = round(tab_resultados$MediaPonderada,0), 
-                             `BIC (BLUP)` = round(tab_resultados$BIC,0),
-                             `Yield (kg/ha, BLUE)` = round(tab_resultados_glm$MediaPonderada,0), 
-                             `BIC (BLUE)` = round(tab_resultados_glm$BIC,0)
+  indicadores_bind = tibble(`Codigodo Experimento` = tab_resultados$id_ensaio,
+                             `Média BLUP (kg/ha)` = round(tab_resultados$MediaPonderada,0), 
+                             `Valor BIC (BLUP)` = round(tab_resultados$BIC,0),
+                             `Média BLUE(kg/ha)` = round(tab_resultados_glm$MediaPonderada,0), 
+                             `Valor BIC(BLUP)` = round(tab_resultados_glm$BIC,0),
+                             `MEDIA ARITMETICA(kg/ha)` = round(tab_resultados_glm$MediaPonderada,0),
+                             `Local` = tab_resultados$Local,
+                             `Cidade` = tab_resultados$Cidade,
+                             `UF` = tab_resultados$UF,
+                             `Irrigação` = ifelse(inputUsuario$irrigacaoInputDoencas == 't', 'Sim', 'Nao'),
+                             `Fungicida` = ifelse(inputUsuario$fungicidaInputDoencas == 't', 'Sim', 'Nao'),
+                             `Tipo de grão` = capture.output(cat(inputUsuario$tipodegraoInputDoencas, sep = ',')),
+                             `Época` = capture.output(cat(inputUsuario$epocaInputDoencas, sep = ',')),
   )
   
   return(indicadores_bind)
