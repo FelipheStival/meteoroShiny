@@ -200,7 +200,7 @@ grafico.GraficoLinhas = function(dados) {
 # Aba "Analise GGE"
 # Grafico "Quem vence e aonde"
 grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
-  WhichWon(gge.model, sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+  WhichWon(gge.model, largeSize = 4) + theme_bw()
 }
 #==============================================#
 
@@ -208,14 +208,14 @@ grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
 # Aba "Analise GGE"
 # Grafico "Ordem de Ambiente"
 grafico.analiseGGE_OrdemDeAmbiente = function(gge.model) {
-  RankEnv(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+  RankEnv(gge.model, largeSize = 4) + theme_bw()
 }
 
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Ordem de genotipo"
 grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
-  RankGen(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+  RankGen(gge.model, largeSize = 4) + theme_bw()
 }
 #==============================================#
 
@@ -223,7 +223,7 @@ grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
 # Aba "Analise GGE"
 # Grafico "Relacao entre ambientes"
 grafico.analiseGGE_RelacaoEntreAmbientes = function(gge.model) {
-  EnvRelationship(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+  EnvRelationship(gge.model, largeSize = 4) + theme_bw()
 }
 #==============================================#
 
@@ -231,7 +231,7 @@ grafico.analiseGGE_RelacaoEntreAmbientes = function(gge.model) {
 # Aba "Analise GGE"
 # Grafico "Estabilidade / Media"
 grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
-  MeanStability(gge.model,sizeGen = 3, sizeEnv = 3, largeSize = 4) + theme_bw()
+  MeanStability(gge.model, largeSize = 4) + theme_bw()
 }
 #==============================================#
 

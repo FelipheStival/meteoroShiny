@@ -80,7 +80,7 @@ optim_model <- function(data, lme_model, col_cat){
   # Atualiza o banco de dados jogando as categorias não significativas 
   # no intercept
   data_updated <- data %>%
-    mutate(transformed_col = case_when(
+    dplyr::mutate(transformed_col = dplyr::case_when(
       .data[[col_cat]] %in% cat_vec_to_intercept ~ intercept_cat,
       !.data[[col_cat]] %in% cat_vec_to_intercept ~ .data[[col_cat]]
     )) %>%
@@ -134,7 +134,8 @@ gera_tabela_por_trial <- function(data, lme_model, col_cat, random_cat){
       cidadeExperimento <- unique(data_up$cidade)
       ufExperimento <- unique(data_up$estado)
       mediaProducao <- median(data_up$produtividade)
-        
+      
+      
       tab_results <- rbind(tab_results,
                            tibble(id_ensaio = trial, 
                                   MediaPonderada = unlist(optim_model(data_up, lme_model, col_cat)$Media_ponderada),

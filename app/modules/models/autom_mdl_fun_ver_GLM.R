@@ -83,7 +83,7 @@ optim_model_glm <- function(data, glm_model, col_cat){
     # Atualiza o banco de dados jogando as categorias não significativas 
     # no intercept
     data_updated <- data %>%
-      mutate(transformed_col = case_when(
+      dplyr::mutate(transformed_col = dplyr::case_when(
         .data[[col_cat]] %in% cat_vec_to_intercept ~ intercept_cat,
         !.data[[col_cat]] %in% cat_vec_to_intercept ~ .data[[col_cat]]
       )) %>%

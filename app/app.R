@@ -39,6 +39,7 @@ app.LoadPackages = function()
     require(caret)
     require(lmerTest)
     require(broom.mixed)
+    require(plyr)
   
     #==============================================#
 }
