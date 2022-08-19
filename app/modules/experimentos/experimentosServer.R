@@ -54,8 +54,8 @@ doencaServer = function(input, output, session) {
     updateSelectInput(
       session = session,
       inputId = "safraInputDoencas",
-      choices = c("Todos", safras),
-      selected = "Todos"
+      choices = safras,
+      selected = "12/13"
     ) 
   })
   
@@ -176,15 +176,14 @@ doencaServer = function(input, output, session) {
     
     #====================================#
     # Validacao
-    
     validate(
-      need(!is.null(dadosEstatistica()),
-           "Nao ha dados suficientes para exibicao do grafico.")
+      need(!is.null(dadosFiltrados()), "Nao ha dados suficientes para exibicao do grafico."),
+      need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
     )
     
     #====================================#
-    
-    grafico.analiseEstatistica_Resumo(dadosEstatistica(), input$GenotipoSelectExperimentosMedia)
+    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
+    grafico.analiseEstatistica_Resumo(dataPlot$pred)
     
   })
   #==============================================#
@@ -199,14 +198,13 @@ doencaServer = function(input, output, session) {
     
     validate(
       need(!is.null(dadosEstatistica()),
-           "Nao ha dados suficientes para exibicao do grafico.")
+           "Nao ha dados suficientes para exibicao do grafico."),
+      need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
     )
     
     #====================================#
-    
-    grafico.analiseEstatistica_Unitario(dadosEstatistica(),
-                                        input$select_analiseEstatistica_local,
-                                        input$GenotipoSelectExperimentosMedia)
+    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
+    grafico.analiseEstatistica_Unitario(dataPlot$pred, input$select_analiseEstatistica_local)
     
   })
   #==============================================#
@@ -220,15 +218,36 @@ doencaServer = function(input, output, session) {
     validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
     
     validate(
-      need(validate.ids_data > 1,
-           "Nao ha dados suficientes para exibicao do grafico.")
+      need(validate.ids_data > 1, "Nao ha dados suficientes para exibicao do grafico."),
+      need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
     )
     #====================================#
     
-    grafico.analiseEstatistica_Heatmap(dadosEstatistica())
+    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
+    grafico.analiseEstatistica_Heatmap(dataPlot$pred)
     
   })
   #==============================================#
+  
+  #==============================================#
+  # Grafico "Analise cluster"
+  output$grafico_geral_cluster = renderPlot({
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = length(unique((dadosFiltrados()$id_ensaio)))
+    
+    validate(
+      need(validate.ids_data > 1, "Nao ha dados suficientes para exibicao do grafico."),
+      need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
+    grafico.analiseCluster(dataPlot$pred)
+    
+  })
+  
   
   #==============================================#
   # Grafico "linhas"

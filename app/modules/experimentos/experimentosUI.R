@@ -120,16 +120,6 @@ tabItem.analiseEstatistica = function() {
           "selecione o local:",
           c("AL_TRA"),
           selected = "AL_TRA"
-        ),
-        
-        # Selecao valores media
-        selectInput(
-          "GenotipoSelectExperimentosMedia",
-          "Filtro",
-          choices = c("Acima da media" = "above",
-                      "Abaixo da media" = "below",
-                      "Todos" = "Todos"),
-          selected = "Acima da media",
         )
       ),
       box(
@@ -150,15 +140,26 @@ tabItem.analiseEstatistica = function() {
       tabName = "analise-gge",
       tabBox(
         width = "100%",
-        height = "90vh",
+        height = "75vh",
         
         tabPanel(
-          "Gráfico media geral",
-          plotOutput(
-            "grafico_analiseEstatistica_Resumo",
-            width = "100%",
-            height = "80vh"
-          ) %>% withSpinner(color = "#0dc5c1"),
+          "Gráfico geral",
+          tabsetPanel(
+            tabPanel('Media geral',
+                     plotOutput(
+                       "grafico_analiseEstatistica_Resumo",
+                       width = "100%",
+                       height = "75vh"
+                     ) %>% withSpinner(color = "#0dc5c1"),          
+            ),
+            tabPanel('Gráfico cluster',
+                     plotOutput(
+                       "grafico_geral_cluster",
+                       width = "100%",
+                       height = "75vh"
+                     ) %>%  withSpinner(color = "#0dc5c1"), 
+            )
+          )
         ),
         tabPanel(
           "Gráfico media local",
@@ -245,12 +246,11 @@ doencas.sidebar = function() {
         label = "Selecione a cultura:",
         choices = "Todos"
       ),
-      selectInput(
+      selectizeInput(
         inputId = "safraInputDoencas",
         label = "Selecione a safra:",
-        choices = "Todos",
-        multiple = T,
-        selectize = T
+        choices = "12/13",
+        options = list(maxItems = 2)
       ),
       selectInput(
         inputId = "estadoInputDoencas",

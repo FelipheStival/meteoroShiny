@@ -55,84 +55,43 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Resumo"
-grafico.analiseEstatistica_Resumo = function(tabela, mediaApresentar) {
+grafico.analiseEstatistica_Resumo = function(tabela) {
   
-  Y1 = data.frame(tabela[[1]])
-  model.mean = as.numeric(tabela[[2]])
+  modified_data <- tabela %>% 
+    # Agrupar por genotipo e calcular media e mediana
+    dplyr::group_by(gid) %>% 
+    dplyr::summarise(mean_pred = mean(predicts), median = median(predicts))
   
-  Y1 = Y1 %>% group_by(gid) %>% dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
-  Y1$mean = round((Y1$mean - model.mean), 2)
-  Y1$type = ifelse(Y1$mean < 0, "below", "above")
+  # Muda o df para formato long
+  long <- melt(modified_data,id.vars="gid")
   
-  theme_set(theme_bw())
-  
-  correlation = as.numeric(tabela[[3]])
-  sub = sprintf("h2: %s, Produtividade media: %s",
-                round(correlation[[1]], 2) ,
-                round(model.mean, 2))
-  
-  if(mediaApresentar != "Todos"){
-    Y1 = Y1[Y1$type == mediaApresentar,] 
-  }
-  
-  ggplot(Y1, aes(
-    x = fct_reorder(gid, mean),
-    y = mean,
-    label = gid
-  )) +
-    geom_bar(stat = 'identity', aes(fill = type), width = .5) +
-    scale_fill_manual(
-      name = "Produtividade",
-      labels = c("Acima media geral", "Abaixo media geral"),
-      values = c("above" = "#7cb342", "below" = "#e53935")
-    ) +
-    labs(subtitle = sub, title = "") +
-    ylab("Variacao na produtividade, kg/ha") + xlab("Genotipos") + coord_flip()
+  ggplot(data = long, aes(x=reorder(gid,value), y=value, fill=variable)) + 
+    geom_bar(stat = "identity",
+             position="dodge") +
+    xlab("Genótipos") +
+    ylab("Produtividade estimada") +
+    coord_flip() + 
+    scale_fill_discrete(name="",
+                        labels=c("Média", "Mediana"))+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    theme_light()
 }
 #==============================================#
 
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Unitario"
-grafico.analiseEstatistica_Unitario = function(tabela, site = "", mediaApresentar) {
+grafico.analiseEstatistica_Unitario = function(data_plot, site = "") {
   
-  Y1 = data.frame(tabela[[1]])
-  if (site == "") {
-    site = unique(Y1$site)
-    site = site[order(site)]
-    site = site[1]
-  }
-  
-  model.mean = as.numeric(tabela[[2]])
-  correlation = as.numeric(tabela[[3]])
-  correlation = round(correlation, digits = 2)
-  
-  Y1$site = as.character(Y1$site)
-  solo = Y1[Y1$site == site, ]
-  
-  solo$mean = round((solo$y.cor - model.mean), 2)
-  solo$type = ifelse(solo$mean < 0, "below", "above")
-  solo$gid_plot = sprintf("%s_%s", as.character(solo$gid), as.character(solo$year))
-  
-  sub = sprintf("Analise individual: %s", site)
-  
-  if(mediaApresentar != "Todos"){
-    solo = solo[solo$type == mediaApresentar,] 
-  }
-  
-  ggplot(solo, aes(
-    x = fct_reorder(gid_plot, mean),
-    y = mean,
-    label = gid_plot
-  )) +
-    geom_bar(stat = 'identity', aes(fill = type), width = .5) +
-    scale_fill_manual(
-      name = "Produtividade",
-      labels = c("Acima media geral", "Abaixo media geral"),
-      values = c("above" = "#7cb342", "below" = "#e53935")
-    ) +
-    labs(subtitle = sub, title = "") +
-    ylab("Variacao na produtividade, kg/ha") + xlab("Genotipos") + coord_flip()
+  data_plot = data_plot[data_plot$site == site,]
+  ggplot(data = data_plot, aes(x=reorder(gid,predicts), y=predicts)) + 
+    geom_boxplot( fill = "lightyellow") + 
+    stat_boxplot(geom ='errorbar') + 
+    xlab("Genótipos") +
+    ylab("Produtividade estimada") +
+    coord_flip() + 
+    theme_light() +
+    facet_grid(~site)
 }
 #==============================================#
 
@@ -140,21 +99,22 @@ grafico.analiseEstatistica_Unitario = function(tabela, site = "", mediaApresenta
 # Aba "Estatistica"
 # Grafico "Heatmap"
 grafico.analiseEstatistica_Heatmap = function(tabela) {
-  Y1 = data.frame(tabela[[1]])
-  Y1 = Y1 %>% group_by(gid, site) %>% dplyr::summarize(mean = mean(y.cor, na.rm = TRUE))
-  
-  ggplot(Y1, aes(site, reorder(gid, mean))) +
-    geom_tile(aes(fill = mean), color = "white") +
-    scale_fill_gradient(low = "#e53935", high = "#7cb342") +
-    ylab("Genotipos") + xlab("Locais") +
-    theme(
-      legend.title = element_text(size = 10),
-      legend.text = element_text(size = 12),
-      plot.title = element_text(size = 16),
-      axis.title = element_text(size = 14, face = "bold"),
-      axis.text.x = element_text(angle = 90, hjust = 1)
+  grafico = tabela %>%
+    ggplot(aes(x = site, y = gid, fill = predicts)) +
+    geom_tile(height = 1.1, color = 'black') +
+    scale_fill_gradientn(colors = c("red","green")) +
+    labs(
+      x = 'Locais',
+      y = 'Genótipos',
+      fill = 'Produtividade predita (kg/ha)'
     ) +
-    labs(fill = "Produtividade\n (Kg/ha)")
+    theme(
+      strip.background = element_blank(),
+      panel.border = element_rect(color = 'black', fill = NA, size = 0.8),
+      legend.title.align = 0.5
+    )
+  
+  return(grafico)
 }
 #==============================================#
 
@@ -196,6 +156,90 @@ grafico.GraficoLinhas = function(dados) {
   
   return(p)
 }
+
+#==============================================#
+# Aba "Estatistica"
+# Grafico "Linhas"
+grafico.analiseCluster = function(data_plot){
+  
+  # Clusters
+  cluster_data <- data_plot %>% 
+    # Agrupar por genotipo e calcular media
+    dplyr::group_by(gid) %>% 
+    dplyr::summarise(mean_pred = mean(predicts))
+  # Selecionar o numero de clusters
+  k_val <- 5
+  # Salva os clusters referentes a cada observacao
+  set.seed(123)
+  clusters_obs <- kmeans(cluster_data[2], k_val, nstart = 50)$cluster
+  # Adiciona os clusters no df
+  cluster_data <- data.frame(cluster_data, grupos = (clusters_obs))
+  # Coloca o df em ordem crescente
+  cluster_data <- cluster_data[order(cluster_data$mean_pred),]
+  rownames(cluster_data) <- NULL
+  
+  # Fixa um df para colocar o numero de clusters em ordem crescente
+  cluster_data_pin <- cluster_data
+  s_want <- 1:length(unique(clusters_obs))
+  s_now <- unique(cluster_data$grupos)
+  # Finalmente coloca em ordem crescente
+  for(i in 1:length(unique(clusters_obs))){
+    
+    cluster_data_pin[cluster_data == s_now[i]] <- s_want[i]
+    
+  }
+  
+  # Precisamos obter tambem os intervalos de cada cluster
+  # Simulando de 1 em 1
+  set.seed(123)
+  clusters_obs_sim <- kmeans(min(cluster_data$mean_pred):max(cluster_data$mean_pred), k_val, nstart = 50)$cluster
+  
+  sim_data <- data.frame(predicts = min(cluster_data$mean_pred):max(cluster_data$mean_pred), grupos = clusters_obs_sim) %>% group_by(grupos)
+  sim_data <- data.frame(sim_data)
+  
+  sim_data <- sim_data[order(sim_data$predicts),]
+  sim_data_pin <- sim_data
+  
+  #seq_want <- 1:length(unique(res.km.real))
+  s_now_sim <- unique(sim_data_pin$grupos)
+  
+  for(i in 1:length(unique(clusters_obs_sim))){
+    
+    sim_data_pin[sim_data == s_now_sim[i]] <- s_want[i]
+    
+  }
+  
+  # Definir intervalos entre os clusters
+  intervals <- matrix(nrow = length(unique(sim_data_pin$grupos)),ncol = 2)
+  for(i in 1:length(unique(sim_data_pin$grupos))){
+    
+    intervals[i,1] <- round(min(sim_data_pin %>% filter(grupos == i) %>% summarise(predicts)),0)-1
+    intervals[i,2] <- round(max(sim_data_pin %>% filter(grupos == i) %>% summarise(predicts)),0)
+    
+  }
+  
+  # Intervalos em string para o grafico
+  fill_label <- c()
+  fill_label[1] <- paste0("[",intervals[1,1],",",intervals[1,2],"]")
+  
+  for(i in 2:length(unique(sim_data_pin$grupos))){
+    
+    fill_label[i] <- paste0("(",intervals[i,1],",",intervals[i,2],"]")
+    
+  }
+  
+  # Enfim o grafico do cluster
+  ggplot(cluster_data_pin, aes(x=grupos, y=reorder(gid,grupos), fill = as.factor(grupos))) +
+    geom_bar(stat='identity') +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    labs(y = "Genótipos", 
+         x = "",
+         fill = "Grupos (kg/ha)",
+    ) +
+    scale_fill_discrete(labels = fill_label)
+}
+
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Quem vence e aonde"

@@ -501,3 +501,226 @@ model.dadosRelatorio = function(dadosRelatorio){
   return(dadosRelatorio)
 }
 #==============================================#
+
+
+#==============================================#
+# Calcula os preditos com base no banco de dados, ajustando o modelo adequado
+# Note que df nesse caso é o banco de dados filtrado acima
+
+calcula_predict <- function(df,trait,rep,site, gid, year){
+  
+  dataset <- df[,c(trait, rep, site, gid, year)]
+  names(dataset) <- c("trait","rep", "site", "gid", "year")
+  yearBackup <- unique(dataset$year)
+  siteBackup <- unique(dataset$site)
+  
+  r <- length(unique(dataset$rep))
+  y <- length(unique(dataset$year))
+  s <- length(unique(dataset$site))
+  
+  
+  if(length(unique(dataset$site)) > 1){
+    
+    if(length(unique(dataset$year)) > 1){
+      
+      mix.model.an <- lmer(trait~rep:site:year+(1|gid)+(1|gid:site) + (1|gid:year) + (1|gid:site:year),data= dataset)
+      
+      
+    } else {
+      
+      mix.model.an <- lmer(trait ~ rep:site + (1|gid) + (1|gid:site), data = dataset)
+      
+    }
+    
+  } else {
+    
+    if(length(unique(dataset$year)) > 1){
+      
+      mix.model.an <- lmer(trait ~ rep:year + (1|gid) + (1|gid:year), data= dataset)
+      
+      
+    } else {
+      
+      mix.model.an <- lmer(trait~rep +(1|gid),data= dataset)
+      
+    }
+    
+  }
+  
+  fn <- fixef(mix.model.an)[1]
+  resposta <- dataset
+  resposta$predicts <- predict(mix.model.an, newdata = dataset)
+  resposta <- resposta[,c('gid','site','year','predicts')]
+  
+  
+  resp_list <- list()
+  resp_list$pred <- resposta
+  resp_list$Mu <- fn
+  resp_list$mdl <- mix.model.an
+  
+  return(resp_list)
+}
+#==============================================#
+
+#==============================================#
+plot_predict <- function(data_plot){
+  
+  # Inicializa lista de gráficos
+  graficos <- list()
+  
+  # Barplot
+  # para conseguir fazer esse gráfico preciso modificar um pouco os dados
+  
+  modified_data <- data_plot %>% 
+    # Agrupar por genotipo e calcular media e mediana
+    group_by(gid) %>% 
+    summarise(mean_pred = mean(predicts), median = median(predicts))
+  
+  # Muda o df para formato long
+  long <- melt(modified_data,id.vars="gid")
+  
+  
+  graficos$barplot <- ggplot(data = long, aes(x=reorder(gid,value), y=value, fill=variable)) + 
+    geom_bar(stat = "identity",
+             position="dodge") +
+    xlab("Genótipos") +
+    ylab("Predict") +
+    coord_flip() + 
+    scale_fill_discrete(name="",
+                        labels=c("Média", "Mediana"))+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    theme_light()
+  
+  # Boxplot locais
+  locais <- unique(data_plot$site)
+  i <- 2
+  for (loc in locais) {
+    
+    graficos[[i]] <- ggplot(data = data_plot %>% filter(site == loc), aes(x=reorder(gid,predicts), y=predicts)) + 
+      geom_boxplot( fill = "lightyellow") + 
+      stat_boxplot(geom ='errorbar') + 
+      xlab("Genótipos") +
+      ylab("Produtividade predita") +
+      coord_flip() + 
+      theme_light() +
+      facet_grid(~site)
+    
+    names(graficos)[i] <- paste0("graficoboxplot",loc)
+    
+    i <- i + 1
+  }
+  
+  locais <- unique(data_plot$site)
+  i <- 2
+  for (loc in locais) {
+    
+    graficos[[i]] <- ggplot(data = data_plot %>% filter(site == loc), aes(x=reorder(gid,predicts), y=predicts)) + 
+      geom_boxplot( fill = "lightyellow") + 
+      stat_boxplot(geom ='errorbar') + 
+      xlab("Genótipos") +
+      ylab("Predict") +
+      coord_flip() + 
+      theme_light() +
+      facet_grid(~site)
+    
+    names(graficos)[i] <- paste0("graficoboxplot",loc)
+    
+    i <- i + 1
+  }
+  
+  # Heatmap (Locais e genótipos)
+  graficos$heatmap <- data_plot %>% 
+    ggplot(aes(x = site, y = gid, fill = predicts)) +
+    geom_tile(height = 1.1, color = 'black') +
+    scale_fill_gradientn(colors = c("red","green")) +
+    labs(
+      x = 'Locais',
+      y = 'Genótipos',
+      fill = 'Produtividade predita (kg/ha)'
+    ) +
+    theme(
+      strip.background = element_blank(),
+      panel.border = element_rect(color = 'black', fill = NA, size = 0.8),
+      legend.title.align = 0.5
+    )
+  
+  # Clusters
+  cluster_data <- data_plot %>% 
+    # Agrupar por genotipo e calcular media
+    group_by(gid) %>% 
+    summarise(mean_pred = mean(predicts))
+  # Selecionar o numero de clusters
+  k_val <- 5
+  # Salva os clusters referentes a cada observacao
+  set.seed(123)
+  clusters_obs <- kmeans(cluster_data[2], k_val, nstart = 50)$cluster
+  # Adiciona os clusters no df
+  cluster_data <- data.frame(cluster_data, grupos = (clusters_obs))
+  # Coloca o df em ordem crescente
+  cluster_data <- cluster_data[order(cluster_data$mean_pred),]
+  rownames(cluster_data) <- NULL
+  
+  # Fixa um df para colocar o numero de clusters em ordem crescente
+  cluster_data_pin <- cluster_data
+  s_want <- 1:length(unique(clusters_obs))
+  s_now <- unique(cluster_data$cluster)
+  # Finalmente coloca em ordem crescente
+  for(i in 1:length(unique(clusters_obs))){
+    
+    cluster_data_pin[cluster_data == s_now[i]] <- s_want[i]
+    
+  }
+  
+  # Precisamos obter tambem os intervalos de cada cluster
+  # Simulando de 1 em 1
+  set.seed(123)
+  clusters_obs_sim <- kmeans(min(cluster_data$mean_pred):max(cluster_data$mean_pred), k_val, nstart = 50)$cluster
+  
+  sim_data <- data.frame(predicts = min(cluster_data$mean_pred):max(cluster_data$mean_pred), grupos = clusters_obs_sim) %>% group_by(grupos)
+  sim_data <- data.frame(sim_data)
+  
+  sim_data <- sim_data[order(sim_data$predicts),]
+  sim_data_pin <- sim_data
+  
+  #seq_want <- 1:length(unique(res.km.real))
+  s_now_sim <- unique(sim_data_pin$grupos)
+  
+  for(i in 1:length(unique(clusters_obs_sim))){
+    
+    sim_data_pin[sim_data == s_now_sim[i]] <- s_want[i]
+    
+  }
+  
+  # Definir intervalos entre os clusters
+  intervals <- matrix(nrow = length(unique(sim_data_pin$grupos)),ncol = 2)
+  for(i in 1:length(unique(sim_data_pin$grupos))){
+    
+    intervals[i,1] <- round(min(sim_data_pin %>% filter(grupos == i) %>% summarise(predicts)),0)-1
+    intervals[i,2] <- round(max(sim_data_pin %>% filter(grupos == i) %>% summarise(predicts)),0)
+    
+  }
+  
+  # Intervalos em string para o grafico
+  fill_label <- c()
+  fill_label[1] <- paste0("[",intervals[1,1],",",intervals[1,2],"]")
+  
+  for(i in 2:length(unique(sim_data_pin$grupos))){
+    
+    fill_label[i] <- paste0("(",intervals[i,1],",",intervals[i,2],"]")
+    
+  }
+  
+  # Enfim o grafico do cluster
+  graficos$cluster <- ggplot(cluster_data_pin, aes(x=grupos, y=reorder(gid,grupos), fill = as.factor(grupos))) +
+    geom_bar(stat='identity') +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    labs(y = "Genótipos", 
+         x = "",
+         fill = "Grupos (kg/ha)",
+    ) +
+    scale_fill_discrete(labels = fill_label)
+  
+  return(graficos)
+}
+#==============================================#
