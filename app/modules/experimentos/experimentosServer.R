@@ -37,6 +37,13 @@ doencaServer = function(input, output, session) {
     return(y)
   })
   
+  # Dados experimentos
+  dadosExperimentos = reactive({
+    mediaSelect = input$select_analiseEstatistica_media
+    y = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra", mediaSelect)
+    return(y$pred)
+  })
+  
   # Atualizando input cultura
   observe({
     culturas = experimentos.provider.unique(dadosEnsaios(), 'cultura')
@@ -182,8 +189,7 @@ doencaServer = function(input, output, session) {
     )
     
     #====================================#
-    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
-    grafico.analiseEstatistica_Resumo(dataPlot$pred)
+    grafico.analiseEstatistica_Resumo(dadosExperimentos())
     
   })
   #==============================================#
@@ -191,8 +197,6 @@ doencaServer = function(input, output, session) {
   #==============================================#
   # Grafico "Unitario"
   output$grafico_analiseEstatistica_Unitario = renderPlot({
-    
-    
     #====================================#
     # Validacao
     
@@ -242,9 +246,7 @@ doencaServer = function(input, output, session) {
       need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
     )
     #====================================#
-    
-    dataPlot = calcula_predict(dadosFiltrados(), "produtividade", "repeticao", "local","genotipo", "safra")
-    grafico.analiseCluster(dataPlot$pred)
+    grafico.analiseCluster(dadosExperimentos())
     
   })
   

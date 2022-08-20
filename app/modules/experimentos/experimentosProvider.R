@@ -507,7 +507,7 @@ model.dadosRelatorio = function(dadosRelatorio){
 # Calcula os preditos com base no banco de dados, ajustando o modelo adequado
 # Note que df nesse caso é o banco de dados filtrado acima
 
-calcula_predict <- function(df,trait,rep,site, gid, year){
+calcula_predict <- function(df, trait, rep, site, gid, year, mediaFilterSelect = "TODOS"){
   
   dataset <- df[,c(trait, rep, site, gid, year)]
   names(dataset) <- c("trait","rep", "site", "gid", "year")
@@ -520,38 +520,32 @@ calcula_predict <- function(df,trait,rep,site, gid, year){
   
   
   if(length(unique(dataset$site)) > 1){
-    
     if(length(unique(dataset$year)) > 1){
-      
       mix.model.an <- lmer(trait~rep:site:year+(1|gid)+(1|gid:site) + (1|gid:year) + (1|gid:site:year),data= dataset)
-      
-      
     } else {
-      
       mix.model.an <- lmer(trait ~ rep:site + (1|gid) + (1|gid:site), data = dataset)
-      
     }
     
   } else {
-    
     if(length(unique(dataset$year)) > 1){
-      
       mix.model.an <- lmer(trait ~ rep:year + (1|gid) + (1|gid:year), data= dataset)
-      
-      
     } else {
-      
       mix.model.an <- lmer(trait~rep +(1|gid),data= dataset)
-      
     }
-    
   }
   
   fn <- fixef(mix.model.an)[1]
   resposta <- dataset
   resposta$predicts <- predict(mix.model.an, newdata = dataset)
   resposta <- resposta[,c('gid','site','year','predicts')]
+  mediaPredict <- mean(resposta$predicts)
   
+  # Filtrando de acordo com a media selecionada
+  if(mediaFilterSelect == 'ACIMA'){
+    resposta =  resposta[resposta$predicts > mediaPredict,]
+  } else if(mediaFilterSelect == "ABAIXO") {
+    resposta =  resposta[resposta$predicts < mediaPredict,]
+  }
   
   resp_list <- list()
   resp_list$pred <- resposta

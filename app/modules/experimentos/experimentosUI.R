@@ -120,7 +120,16 @@ tabItem.analiseEstatistica = function() {
           "selecione o local:",
           c("AL_TRA"),
           selected = "AL_TRA"
-        )
+        ),
+        
+        # Filtro acima ou abaixo da media
+        selectInput(
+          "select_analiseEstatistica_media",
+          "Filtro por média:",
+          c("Acima da média" = "ACIMA",
+            "Abaixo da média" = "ABAIXO"),
+          selected = "ACIMA"
+        ), 
       ),
       box(
         title = "Download relatorio",
