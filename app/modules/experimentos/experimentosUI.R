@@ -127,7 +127,8 @@ tabItem.analiseEstatistica = function() {
           "select_analiseEstatistica_media",
           "Filtro por média:",
           c("Acima da média" = "ACIMA",
-            "Abaixo da média" = "ABAIXO"),
+            "Abaixo da média" = "ABAIXO",
+            "Todos" = "TODOS"),
           selected = "ACIMA"
         ), 
       ),

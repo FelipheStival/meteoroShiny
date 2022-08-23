@@ -510,6 +510,7 @@ model.dadosRelatorio = function(dadosRelatorio){
 calcula_predict <- function(df, trait, rep, site, gid, year, mediaFilterSelect = "TODOS"){
   
   dataset <- df[,c(trait, rep, site, gid, year)]
+  dataset$rep = as.factor(dataset$rep)
   names(dataset) <- c("trait","rep", "site", "gid", "year")
   yearBackup <- unique(dataset$year)
   siteBackup <- unique(dataset$site)
@@ -517,7 +518,6 @@ calcula_predict <- function(df, trait, rep, site, gid, year, mediaFilterSelect =
   r <- length(unique(dataset$rep))
   y <- length(unique(dataset$year))
   s <- length(unique(dataset$site))
-  
   
   if(length(unique(dataset$site)) > 1){
     if(length(unique(dataset$year)) > 1){
@@ -536,16 +536,10 @@ calcula_predict <- function(df, trait, rep, site, gid, year, mediaFilterSelect =
   
   fn <- fixef(mix.model.an)[1]
   resposta <- dataset
-  resposta$predicts <- predict(mix.model.an, newdata = dataset)
+  resposta$predicts <- predict(mix.model.an, newdata = dataset, allow.new.levels = TRUE)
   resposta <- resposta[,c('gid','site','year','predicts')]
   mediaPredict <- mean(resposta$predicts)
   
-  # Filtrando de acordo com a media selecionada
-  if(mediaFilterSelect == 'ACIMA'){
-    resposta =  resposta[resposta$predicts > mediaPredict,]
-  } else if(mediaFilterSelect == "ABAIXO") {
-    resposta =  resposta[resposta$predicts < mediaPredict,]
-  }
   
   resp_list <- list()
   resp_list$pred <- resposta

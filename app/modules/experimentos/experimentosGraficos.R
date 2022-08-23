@@ -55,12 +55,21 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Resumo"
-grafico.analiseEstatistica_Resumo = function(tabela) {
+grafico.analiseEstatistica_Resumo = function(tabela, mediaSelect = 'TODOS') {
   
   modified_data <- tabela %>% 
     # Agrupar por genotipo e calcular media e mediana
     dplyr::group_by(gid) %>% 
     dplyr::summarise(mean_pred = mean(predicts), median = median(predicts))
+  
+  
+  # Filtrando de acordo com a media selecionada
+  mediaPredict <- mean(modified_data$mean_pred)
+  if(mediaSelect == 'ACIMA'){
+    modified_data =  modified_data[modified_data$mean_pred > mediaPredict,]
+  } else if(mediaSelect == "ABAIXO") {
+    modified_data =  modified_data[modified_data$mean_pred < mediaPredict,]
+  }
   
   # Muda o df para formato long
   long <- melt(modified_data,id.vars="gid")
@@ -74,15 +83,17 @@ grafico.analiseEstatistica_Resumo = function(tabela) {
     scale_fill_discrete(name="",
                         labels=c("Média", "Mediana"))+
     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-    theme_light()
+    theme_light() +
+    labs(
+      title = paste('Média geral', round(mediaPredict), sep = ":")
+    )
 }
 #==============================================#
 
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Unitario"
-grafico.analiseEstatistica_Unitario = function(data_plot, site = "") {
-  
+grafico.analiseEstatistica_Unitario = function(data_plot, site = "", media = 'TODOS') {
   data_plot = data_plot[data_plot$site == site,]
   ggplot(data = data_plot, aes(x=reorder(gid,predicts), y=predicts)) + 
     geom_boxplot( fill = "lightyellow") + 
@@ -160,13 +171,14 @@ grafico.GraficoLinhas = function(dados) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Linhas"
-grafico.analiseCluster = function(data_plot){
+grafico.analiseCluster = function(data_plot, mediaSelect = 'TODOS'){
   
   # Clusters
   cluster_data <- data_plot %>% 
     # Agrupar por genotipo e calcular media
     dplyr::group_by(gid) %>% 
     dplyr::summarise(mean_pred = mean(predicts))
+  
   # Selecionar o numero de clusters
   k_val <- 5
   # Salva os clusters referentes a cada observacao
@@ -228,6 +240,14 @@ grafico.analiseCluster = function(data_plot){
     
   }
   
+  # Filtrando de acordo com a media selecionada
+  mediaPredict <- mean(cluster_data_pin$mean_pred)
+  if(mediaSelect == 'ACIMA'){
+    cluster_data_pin =  cluster_data_pin[cluster_data_pin$mean_pred > mediaPredict,]
+  } else if(mediaSelect == "ABAIXO") {
+    cluster_data_pin =  cluster_data_pin[cluster_data_pin$mean_pred < mediaPredict,]
+  }
+  
   # Enfim o grafico do cluster
   ggplot(cluster_data_pin, aes(x=grupos, y=reorder(gid,grupos), fill = as.factor(grupos))) +
     geom_bar(stat='identity') +
@@ -237,7 +257,10 @@ grafico.analiseCluster = function(data_plot){
          x = "",
          fill = "Grupos (kg/ha)",
     ) +
-    scale_fill_discrete(labels = fill_label)
+    scale_fill_discrete(labels = fill_label) +
+    labs(
+      title = paste('Média geral', round(mediaPredict), sep = ":")
+    )
 }
 
 #==============================================#

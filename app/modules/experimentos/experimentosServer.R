@@ -189,7 +189,8 @@ doencaServer = function(input, output, session) {
     )
     
     #====================================#
-    grafico.analiseEstatistica_Resumo(dadosExperimentos())
+    mediaSelect = input$select_analiseEstatistica_media
+    grafico.analiseEstatistica_Resumo(dadosExperimentos(), mediaSelect)
     
   })
   #==============================================#
@@ -246,7 +247,8 @@ doencaServer = function(input, output, session) {
       need(length(unique(dadosFiltrados()$rep)) > 1, "Nao ha repetições suficientes para exibicao do grafico.")
     )
     #====================================#
-    grafico.analiseCluster(dadosExperimentos())
+    mediaSelect = input$select_analiseEstatistica_media
+    grafico.analiseCluster(dadosExperimentos(), mediaSelect)
     
   })
   
