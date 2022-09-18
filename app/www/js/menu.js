@@ -23,5 +23,5 @@ menuItem.onclick = function(e){
   default:
     console.log('Não escolheu nenhum');
   }
-  console.log(href)
+  console.log(opcao);
 }
