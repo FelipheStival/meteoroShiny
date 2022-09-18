@@ -4,10 +4,10 @@ CREATE TABLE genotipos_doencas(
 	valor float not null,
 	id_genotipo bigint references genotipos(id),
 	id_doenca bigint references doencas(id)
-)
+);
 
 /* Inserindo tipo de grao 'p' */
-INSERT INTO tipos_de_graos(sigla) VALUES('p')
+INSERT INTO tipos_de_graos(sigla) VALUES('p');
 
 /* inserindo novos genotipos */
 INSERT INTO 
