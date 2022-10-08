@@ -40,6 +40,9 @@ app.LoadPackages = function()
     require(lmerTest)
     require(broom.mixed)
     require(plyr)
+    require(cluster)
+    require(fdm2id)
+    require(cowplot)
   
     #==============================================#
 }

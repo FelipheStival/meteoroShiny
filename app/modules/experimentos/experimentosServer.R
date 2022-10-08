@@ -1,5 +1,5 @@
 # Doenca service
-doencaServer = function(input, output, session) {
+experimentoServer = function(input, output, session) {
   
   # Botao retornar
   observeEvent(input$btnRetonarClima,

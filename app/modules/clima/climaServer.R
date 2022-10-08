@@ -195,4 +195,5 @@ mapaServer = function(input, output, session) {
         ylab = "precipitacao",
         Escala = 100)
   })
+  
 }

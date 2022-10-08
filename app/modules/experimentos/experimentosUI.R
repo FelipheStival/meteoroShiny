@@ -310,7 +310,7 @@ doencas.sidebar = function() {
 
 
 # Pagina doencas
-doencasUI = div(id = "clima-container",
+experimentosUI = div(id = "clima-container",
                 dashboardPage(
                   #========================header=========================
                   

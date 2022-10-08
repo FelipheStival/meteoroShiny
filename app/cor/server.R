@@ -17,13 +17,17 @@ server = shinyServer(function(input, output, session) {
   # Conexao com banco de dados
   
   
+  # Doencas Server
+  doencaServer(input, output, session)
+  
   # clima Service
   mapaServer(input,output,session)
   
   # Doenca Service
-  doencaServer(input,output,session)
+  experimentoServer(input,output,session)
   
   # Gerenciar Server
   gerenciarServer(input, output, session)
+  
   
 })
