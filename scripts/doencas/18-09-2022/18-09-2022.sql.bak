@@ -21,7 +21,7 @@ VALUES
 	
 /* Inserindo dados doencas */
 INSERT INTO 
-	genotipos_doencas(valor_fo,valor_fs,id_genotipo) 
+	genotipos_doencas(valor_fo,FS,id_genotipo) 
 VALUES 
 (1.6,1.2,16),
 (1.8,1.4,153),
