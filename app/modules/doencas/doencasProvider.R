@@ -26,6 +26,8 @@ getDadosDoencasProvider = function(){
           	JOIN tipos_de_graos ti on ti.ID = ge.ID_TIPO_GRAO
   ';
   
+  set.seed(12432)
+  
   dados = banco.provider.executeQuery(sql, DOENCA_DB_DATABASE)
   dados = dados[,c('local', 'cidade', 'estado', 'fungicida', 'irrigacao', 'genotipo', 'tipo_de_grao', 'repeticao', 'data_semeadura', 'valor_fs', 'valor_fo', 'safra', 'id_ensaio')]
   names(dados) = c('local', 'cidade', 'estado', 'fungicida', 'irrigacao', 'genotipo', 'tipo_de_grao', 'repeticao', 'data_semeadura', 'FS', 'FO', 'safra', 'id_ensaio')
@@ -50,8 +52,8 @@ getDadosDoencasProvider = function(){
   fs_mudanca <- mudanca %>% group_by(previsao_fs) %>% summarize(maximo = max(notas))
   fo_mudanca <- mudanca %>% group_by(previsao_fo) %>% summarize(maximo = max(notas))
   
-  ordem_fs <- c("2", "1", "3")
   ordem_fo <- c("1", "2", "3")
+  ordem_fs <- c("3", "1", "2")
   ordem <- c("Resistente", "Neutro", "Sensível")
   
   wdata <- wdata %>% mutate(previsao_fs = factor(predict(fs_modelo, FS), levels = ordem_fs, label = ordem) , 

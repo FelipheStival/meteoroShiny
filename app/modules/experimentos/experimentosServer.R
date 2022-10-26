@@ -44,6 +44,8 @@ experimentoServer = function(input, output, session) {
     return(y$pred)
   })
   
+  # Dados potencial pro
+  
   # Atualizando input cultura
   observe({
     culturas = experimentos.provider.unique(dadosEnsaios(), 'cultura')
@@ -120,6 +122,16 @@ experimentoServer = function(input, output, session) {
     )
   })
   
+  # Atualizando input local Potencial genótipo produtivo
+  observe({
+    locais = experimentos.provider.unique(dadosFiltrados(), 'local')
+    updateSelectInput(
+      session = session,
+      inputId = "select_analiseEstatistica_local_potencial_genotipo",
+      choices = locais
+    )
+  })
+  
   # Atualizando lista genotipos grafico linhas
   observe({
     genotipos = experimentos.provider.unique(dadosFiltrados(), 'genotipo')
@@ -141,7 +153,7 @@ experimentoServer = function(input, output, session) {
     
     return(diagnostico)
     
-  },options = list(lengthMenu = c(5,10, 25), pageLength = 5))
+  },options = list(lengthMenu = c(5,10, 25), pageLength = 5, scrollX = TRUE))
   #==============================================#
   
   #==============================================#
@@ -391,6 +403,32 @@ experimentoServer = function(input, output, session) {
     #====================================#
     
     grafico.analiseGGE_Denograma(deno)
+  })
+  #==============================================#
+  
+  
+  #==============================================#
+  # Grafico "Potencial Genotipo"
+  output$potencialGenotipoPlot = renderPlot({
+    
+    localSelecionado = input$select_analiseEstatistica_local_potencial_genotipo
+    
+    dadosPlot = dadosFiltrados();
+    dadosPlot = dadosPlot[!is.na(dadosPlot$produtividade),]
+    
+    #====================================#
+    # Validacao
+    validate.ids_data = nrow(dadosPlot)
+    
+    validate(
+      need(validate.ids_data > 0,
+           "Nao ha dados suficientes para exibicao do grafico.")
+    )
+    #====================================#
+    
+    dadosPlot = gen_prod_pot(dadosPlot)
+    grafico.pontecialProdutivo(dadosPlot, localSelecionado)
+    
   })
   #==============================================#
   

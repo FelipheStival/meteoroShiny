@@ -55,8 +55,8 @@ doencasUI = div(id = "clima-container",
               width = 9,
               tabBox(
                 width = '100%',
-                tabPanel('Grafico Local', plotOutput('graficoDoencasPlot1', width = '100%', height = '80vh') %>% withSpinner(color = "#0dc5c1")),
-                tabPanel('Grafico Geral', plotOutput('graficoDoencasPlot2', width = '100%', height = '80vh') %>% withSpinner(color = "#0dc5c1"))
+                tabPanel('Grafico Geral', plotOutput('graficoDoencasPlot2', width = '100%', height = '80vh') %>% withSpinner(color = "#0dc5c1")),
+                tabPanel('Grafico local', plotOutput('graficoDoencasPlot1', width = '100%', height = '80vh') %>% withSpinner(color = "#0dc5c1"))
               ) 
             )
         )

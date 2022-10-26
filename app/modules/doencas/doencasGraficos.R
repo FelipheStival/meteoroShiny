@@ -1,6 +1,7 @@
 # Grafico local
 gerador_graficos = function(banco, filtroSafra){
   
+  
   agrupados = banco[[1]]
   fs_modelo = banco[[2]]
   fo_modelo = banco[[3]]
@@ -16,19 +17,18 @@ gerador_graficos = function(banco, filtroSafra){
   grafico1 <- ggplot(informacao, aes(reorder(genotipo, -Media_Fo), Media_Fo, fill = predito_fo)) + 
     geom_col() +
     theme_bw() + 
-    labs(x = "Genótipos", y = "Valor Médio", title = paste("Safra", filtroSafra), color = "Grupos",
+    labs(x = "Genótipos", y = "Valor Médio", title = paste("Cidade", filtroSafra), color = "Grupos", 
          fill = "Fusarium oxysporum") +
     coord_flip() + 
     scale_fill_brewer(palette = "Dark2")+
     theme(legend.position = "top", 
           legend.title = element_text(colour="blue", size=10,  face="bold"),
-          axis.text =   element_text(face="bold"))
+          axis.text =   element_text(face="bold")) 
   
-  
-  grafico2 <- ggplot(informacao, aes(reorder(genotipo, -Media_Fs), Media_Fs, fill = predito_fs)) + geom_col() +
+  grafico2 <- ggplot(informacao, aes(reorder(genotipo, -Media_Fs), Media_Fs, fill = predito_fs)) + 
+    geom_col() +
     theme_bw() + 
-    labs(x = "", y = "Valor Médio", title = paste("Safra", filtroSafra), color = "Grupos",
-         fill= "Fusarium solani") +
+    labs(x = "Genótipos", y = "Valor Médio", title = paste("Cidade", filtroSafra), color = "Grupos", fill= "Fusarium solani") +
     coord_flip() + scale_fill_brewer(palette = "Dark2")+
     theme(legend.position = "top", 
           legend.title = element_text(colour="red", size=10,  face="bold"),
