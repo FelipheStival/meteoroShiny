@@ -278,7 +278,7 @@ grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
                           color = ifelse(
                             label_plot %in% plot[["plot_env"]][["labelgen"]], "forestgreen", "blue"
                           ),
-                          max.overlaps  = 14,
+                          max.overlaps  = 65.,
                           max.iter = 10000)
   
   return(plot)
@@ -308,7 +308,7 @@ grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
                              color = ifelse(
                                label_plot %in% plot[["plot_env"]][["labelgen"]], "forestgreen", "blue"
                              ),
-                             max.overlaps  = 14,
+                             max.overlaps  = 65.,
                              max.iter = 10000)
   return(plot)
 }
@@ -337,7 +337,7 @@ grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
                              color = ifelse(
                                label_plot %in% plot[["plot_env"]][["labelgen"]], "forestgreen", "blue"
                              ),
-                             max.overlaps  = 14,
+                             max.overlaps  = 65.,
                              max.iter = 10000)
   
   return(plot)

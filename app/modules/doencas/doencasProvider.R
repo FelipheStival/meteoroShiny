@@ -54,7 +54,7 @@ getDadosDoencasProvider = function(){
   
   ordem_fo <- c("1", "2", "3")
   ordem_fs <- c("3", "1", "2")
-  ordem <- c("Resistente", "Neutro", "Sensível")
+  ordem <- c("Baixo", "Médio", "Alto")
   
   wdata <- wdata %>% mutate(previsao_fs = factor(predict(fs_modelo, FS), levels = ordem_fs, label = ordem) , 
                             previsao_fo = factor(predict(fo_modelo, FO), levels = ordem_fo, label = ordem))
