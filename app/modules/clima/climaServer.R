@@ -6,6 +6,11 @@ mapaServer = function(input, output, session) {
                change_page('/')
   )
   
+  # Botao gerenciar
+  observeEvent(input$btnAtualizarDados,
+               change_page('/gerenciarClima')
+  )
+  
   # Obter estados
   observe({
     estados = provider.obterEstados()
