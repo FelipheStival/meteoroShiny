@@ -46,9 +46,8 @@ mapaServer = function(input, output, session) {
   dadosClimaticos = reactive({
     dados = provider.obterClimaticos(input$cidadeInput,
                                      input$periodoInput
-                                     )
+                                    )
   })
-  
   
   # Reative para conseguir os dados anomalia
   dadosAnomaliaTemperatura = reactive({

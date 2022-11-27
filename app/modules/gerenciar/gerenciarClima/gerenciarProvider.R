@@ -212,3 +212,33 @@ procurarIdCultura = function(conexao, nomeCultura){
     return(result$id)
   }
 }
+
+#
+#Metodo para verificar as colunas do arquivo
+#
+verificarColunas = function(arquivo){
+  
+  #selecionando colunas PROD e GENOTIPO
+  indexGENPROD = which(names(arquivo) %in% c("GENOTIPO","PROD"))
+  
+  if(length(indexGENPROD) >= 2){
+    return(TRUE)
+  }
+  
+  return(FALSE)
+  
+}
+
+#
+#Verificar se nao existe NA nas colunas
+#
+VerificarNAColunas = function(arquivo){
+  
+  if(verificarColunas(arquivo)){
+    return(all(complete.cases(arquivo)))
+  }
+  
+  return(FALSE)
+  
+  
+}
