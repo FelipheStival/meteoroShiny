@@ -1,28 +1,29 @@
 #================================================================
 # Gerenciar Provider
 #================================================================
-inserirDadosClima = function(novosDados){
+inserirDadosExperimentos = function(novosDados){
   
-  browser()
   # Abrindo conexao
-  conn = banco.provider.openConnection(DB_DATABASE)
+  conn = banco.provider.openConnection(DOENCA_DB_DATABASE)
   
   # Percorrendo linhas e checando se cidade e estado existe
   nlinhas = nrow(novosDados)
   
   for(i in 1:nlinhas){
     
+    browser()
     linha = novosDados[i,]
     
-    estado = linha$estado
-    cidade = linha$cidade
+    local = linha$local
+    genotipo = linha$genotipo
+    cultura = linha$cultura
     
     # Verificando se existe estado caso não exista irá inserir
-    statment = sprintf("SELECT * FROM estados WHERE nome = '%s'", estado)
-    dadosEstado = banco.provider.executeQuery(statment, DB_DATABASE)
+    statment = sprintf("SELECT * FROM locais WHERE nome = '%s'", local)
+    dadosLocal = banco.provider.executeQuery(statment, DOENCA_DB_DATABASE)
     
-    if(nrow(dadosEstado) == 0){
-      statment = sprintf("INSERT INTO public.estados(nome) VALUES ('%s')", estado)
+    if(nrow(dadosLocal) == 0){
+      statment = sprintf("INSERT INTO public.locais(nome) VALUES ('%s')", local)
       dbSendQuery(conn, statment)
     }
     
@@ -66,13 +67,13 @@ inserirDadosClima = function(novosDados){
 #========================================================
 # Método para verificar as colunas do arquivo
 #========================================================
-verificarColunasGerenciarClima = function(arquivo){
+verificarColunasGerenciarExperimentos = function(arquivo){
   
   #selecionando colunas PROD e GENOTIPO
-  requiredColumn = c("data","tmax", "tmin", "tmed", "urmed", "vento", "vtmax", "rad", "precip", "tsolo", "cidade", "estado")
+  requiredColumn = c("safra","irrigacao", "fungicida", "repeticao", "produtividade", "numero_de_plantas_na_parcela_util_vegetativo_linha_um", "data_semeadura", "data_emergencia", "data_emergencia", "data_inicio_floracao", "data_inicio_ponto_colheita", "data_inicio_colheita", "epoca", "local", "genotipo", "cultura")
   indexColumn = which(names(arquivo) %in% requiredColumn)
   
-  if(length(indexColumn) >= 12){
+  if(length(indexColumn) >= 15){
     return(TRUE)
   }
   

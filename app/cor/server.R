@@ -32,5 +32,8 @@ server = shinyServer(function(input, output, session) {
   # Gerenciar Experimentos 
   gerenciarExperimentosServer(input, output, session)
   
+  # Gerenciar doencas
+  gerenciarDoencasServer(input, output, session)
+  
   
 })

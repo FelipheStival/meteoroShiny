@@ -5,42 +5,55 @@
 #==================================================================
 # Interface carregar arquivo
 #==================================================================
-carregarExperimentosUI = function(){
+carregarExperimentosUI = function() {
+  
   fluidRow(
-    
-    box(width = 3,
-        title = 'Escolha um arquivo CSV',
-        solidHeader = TRUE,
-        status = "primary",
-        #===================Escolher arquivo=======================
-        
-        fileInput(inputId = 'arquivoExperimentos',
-                  label = 'Escolha um arquivo CSV',
-                  accept = c(
-                    "text/csv",
-                    "text/comma-separated-values,text/plain",
-                    ".csv")),
-        
-        #===========================================================
-        
-        tags$hr(),
-        
-        #===================Header arquivo==========================
-        
-        checkboxInput(inputId = 'cabecalhoExperimentos',
-                      label = 'Cabecalho',
-                      value = TRUE),
-        
-        #===========================================================
-        
-        #===================Separador arquivo=======================
-        
-        radioButtons(inputId = 'separadorExperimentos',
-                     label = 'Separador',
-                     choices = c("," = ",",
-                                 ";" = ";",
-                                 "t" = "\t"),
-                     selected = ",")
+    box(
+      width = 3,
+      title = 'Escolha um arquivo CSV',
+      solidHeader = TRUE,
+      status = "primary",
+      #===================Escolher arquivo=======================
+      
+      fileInput(
+        inputId = 'arquivoExperimentos',
+        label = 'Escolha um arquivo CSV',
+        accept = c(
+          "text/csv",
+          "text/comma-separated-values,text/plain",
+          ".csv"
+        )
+      ),
+      
+      #===========================================================
+      
+      tags$hr(),
+      
+      #===================Header arquivo==========================
+      
+      checkboxInput(
+        inputId = 'cabecalhoExperimentos',
+        label = 'Cabecalho',
+        value = TRUE
+      ),
+      
+      #===========================================================
+      
+      #===================Separador arquivo=======================
+      
+      radioButtons(
+        inputId = 'separadorExperimentos',
+        label = 'Separador',
+        choices = c("," = ",",
+                    ";" = ";",
+                    "t" = "\t"),
+        selected = ","
+      ),
+      
+      #===================Realizar Upload=======================
+      
+      actionButton(inputId = 'btnatualizarDadosExperimentos',
+                   label = 'Atualizar dados')
     ),
     
     #===========================================================
@@ -49,12 +62,13 @@ carregarExperimentosUI = function(){
     
     #==================Saida tabela==============================
     
-    box(width = 9,
-        title = 'Tabela',
-        solidHeader = TRUE,
-        align="center",
-        status = "primary",
-        uiOutput("UItabelaGerenciarExperimentos") %>% withSpinner(color="#0dc5c1")
+    box(
+      width = 9,
+      title = 'Tabela',
+      solidHeader = TRUE,
+      align = "center",
+      status = "primary",
+      uiOutput("UItabelaGerenciarExperimentos") %>% withSpinner(color = "#0dc5c1")
     )
   )
 }
@@ -63,7 +77,7 @@ carregarExperimentosUI = function(){
 #==================================================================
 # Gerenciar UI
 #==================================================================
-gerenciarExperimentosUI = function(){
+gerenciarExperimentosUI = function() {
   div(id = "clima-container",
       dashboardPage(
         #========================header=========================
@@ -72,7 +86,7 @@ gerenciarExperimentosUI = function(){
                         tags$li(
                           class = "dropdown",
                           actionLink(
-                            inputId = "btnRetonarExperimentos",
+                            inputId = "btnRetonarGerenciarExperimentos",
                             label = "Voltar",
                             icon = icon("sign-out"),
                             style = "font-size: 1.5em;"
@@ -97,10 +111,7 @@ gerenciarExperimentosUI = function(){
         #=======================body=============================
         dashboardBody(tabItems(
           tabItem(tabName = "atualizarDadosExperimentos",
-              carregarExperimentosUI()
-          )
-        )
-      )
-    )
-  )
+                  carregarExperimentosUI())
+        ))
+    ))
 }

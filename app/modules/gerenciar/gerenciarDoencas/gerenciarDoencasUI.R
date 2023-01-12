@@ -40,7 +40,12 @@ carregarDoencasUI = function(){
                      choices = c("," = ",",
                                  ";" = ";",
                                  "t" = "\t"),
-                     selected = ",")
+                     selected = ","),
+        
+        #===================Realizar Upload=======================
+        
+        actionButton(inputId = 'btnatualizarDadosDoencas',
+                     label = 'Atualizar dados')
     ),
     
     #===========================================================
@@ -72,7 +77,7 @@ gerenciarDoencasUI = function(){
                         tags$li(
                           class = "dropdown",
                           actionLink(
-                            inputId = "btnRetonarExperimentos",
+                            inputId = "btnRetonarGerenciarDoencas",
                             label = "Voltar",
                             icon = icon("sign-out"),
                             style = "font-size: 1.5em;"

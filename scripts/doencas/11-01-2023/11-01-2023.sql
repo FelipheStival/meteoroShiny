@@ -1,0 +1,16 @@
+/* CRIANDO TABELA CATEGORIA */
+CREATE TABLE categoria (
+	id SERIAL PRIMARY KEY,
+	nome text
+);
+
+/* INSERINDO CATEGORIA COMO EXEMPLO */
+INSERT INTO categoria(NOME) VALUES ('categoria 1');
+
+/* ADICIONANDO COLUNA CATEGORIA NOS ENSAIOS */
+ALTER TABLE ensaios
+ADD COLUMN categoria_id integer default 1
+
+ALTER TABLE ensaios
+ADD FOREIGN KEY (categoria_id) REFERENCES categoria(id);
+

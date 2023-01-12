@@ -40,7 +40,12 @@ carregarUI = function(){
                      choices = c("," = ",",
                                  ";" = ";",
                                  "t" = "\t"),
-                     selected = ",")
+                     selected = ","),
+        
+        #===================Realizar Upload=======================
+        
+        actionButton(inputId = 'btnatualizarDadosClima',
+                     label = 'Atualizar dados')
     ),
     
     #===========================================================
@@ -72,7 +77,7 @@ gerenciarUI = function(){
                         tags$li(
                           class = "dropdown",
                           actionLink(
-                            inputId = "btnRetonarExperimentos",
+                            inputId = "btnRetonarGerenciarClima",
                             label = "Voltar",
                             icon = icon("sign-out"),
                             style = "font-size: 1.5em;"
@@ -89,7 +94,8 @@ gerenciarUI = function(){
                              text = "Atualizar dados",
                              tabName = "atualizarDadosClima",
                              icon = icon("upload"),
-                             selected = T
+                             selected = T,
+                             startExpanded = TRUE
                            )
                          )),
         #========================================================

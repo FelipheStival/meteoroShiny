@@ -8,13 +8,15 @@ gerenciarServer = function(input, output, session) {
     dados = NULL
     
     if(!is.null(input$arquivo)){
+      
       dados = read.table(input$arquivo$datapath,
-                         header = input$header,
-                         sep = input$sep,
+                         header = input$cabecalho,
+                         sep = input$separador,
                          stringsAsFactors = F)
     }
     
     return(dados)
+    
   }) 
   
   #=======================================================
@@ -22,6 +24,12 @@ gerenciarServer = function(input, output, session) {
   #=======================Criando output tabela=================
   
   observe({
+    
+    # Botao retornar
+    observeEvent(input$btnRetonarGerenciarClima,
+                 change_page('/')
+    )
+    
     
     if(!is.null(dadosUpload())){
       
@@ -34,28 +42,25 @@ gerenciarServer = function(input, output, session) {
           type = "error"
         )
         
-      } 
-      else
-      {
+      }  else {
         
-        #Verificando colunas PROD e parental
-        if(!verificarColunas(dadosUpload())){
+       # Verificando colunas PROD e parental
+        if(!verificarColunasGerenciarClima(dadosUpload())){
           
           shinyalert(
             title = 'Colunas obrigatorias',
-            text = 'A tabela deve conter as colunas PARENTAL E PROD',
+            text = 'A tabela não possui os campos obrigatórios para inserir novos dados',
             type = "error"
           )
-        }
-        
-        #Verificando se existe NA na tabela
-        if(verificarColunas(dadosUpload()) & !VerificarNAColunas(dadosUpload())){
           
-          shinyalert(
-            title = 'Valores nulos',
-            text = 'A tabela possui valores nulos',
-            type = "error"
-          )
+        } else {
+          
+          # Redenizando UI para visualizacao da tabela
+          output$UItabela = renderUI({
+            
+            dataTableOutput("tabelaUsuario")
+            
+          })
           
         }
         
@@ -78,10 +83,38 @@ gerenciarServer = function(input, output, session) {
   #=======================Escrevendo tabela===========================
   
   output$tabelaUsuario = renderDataTable({
-    datatable(globalData(),options = list(scrollY = '500px'))
+    dadosUpload()
   })
   
   #===================================================================
+  
+  
+  #=======================Evento botao atualizar======================
+  observeEvent(input$btnatualizarDadosClima, {
+    
+    if(!is.null(dadosUpload())){
+      
+      if(inserirDadosClima(dadosUpload())){
+        
+        shinyalert(
+          title = 'Sucesso',
+          text = 'Dados atualizados com sucesso',
+          type = "success"
+        )
+        
+      } else {
+        
+        shinyalert(
+          title = 'Erro',
+          text = 'Erro ao atualizar os dados',
+          type = "error"
+        )
+        
+      }
+      
+    }
+    
+  })
   
   return(output)
 }

@@ -3,18 +3,21 @@ gerenciarDoencasServer = function(input, output, session) {
   
   #===================entrada de dados===================
   
-  dadosUpload = reactive({
+  dadosUploadDoencas = reactive({
     
     dados = NULL
     
-    if(!is.null(input$arquivo)){
-      dados = read.table(input$arquivo$datapath,
-                         header = input$header,
-                         sep = input$sep,
+    if(!is.null(input$arquivoDoencas)){
+      
+      dados = read.table(input$arquivoDoencas$datapath,
+                         header = input$cabecalhoDoencas,
+                         sep = input$separadorDoencas,
                          stringsAsFactors = F)
+      
     }
     
     return(dados)
+    
   }) 
   
   #=======================================================
@@ -23,10 +26,16 @@ gerenciarDoencasServer = function(input, output, session) {
   
   observe({
     
-    if(!is.null(dadosUpload())){
+    # Botao retornar
+    observeEvent(input$btnRetonarGerenciarDoencas,
+                 change_page('/')
+    )
+    
+    
+    if(!is.null(dadosUploadDoencas())){
       
       #Verificando separador
-      if(ncol(dadosUpload()) <= 1){
+      if(ncol(dadosUploadDoencas()) <= 1){
         
         shinyalert(
           title = 'Erro separador',
@@ -39,23 +48,22 @@ gerenciarDoencasServer = function(input, output, session) {
       {
         
         #Verificando colunas PROD e parental
-        if(!verificarColunas(dadosUpload())){
+        if(!verificarColunasGerenciarDoencas(dadosUploadDoencas())){
           
           shinyalert(
             title = 'Colunas obrigatorias',
             text = 'A tabela deve conter as colunas PARENTAL E PROD',
             type = "error"
           )
-        }
-        
-        #Verificando se existe NA na tabela
-        if(verificarColunas(dadosUpload()) & !VerificarNAColunas(dadosUpload())){
           
-          shinyalert(
-            title = 'Valores nulos',
-            text = 'A tabela possui valores nulos',
-            type = "error"
-          )
+        } else {
+          
+          #Visualizacao tabela
+          output$UItabelaGerenciarDoencas = renderUI({
+            
+            dataTableOutput("tabelaDoencasUpload")
+            
+          })
           
         }
         
@@ -64,7 +72,7 @@ gerenciarDoencasServer = function(input, output, session) {
     } else{
       
       #Visualizacao tabela
-      output$UItabelaGerenciarExperimentos = renderUI({
+      output$UItabelaGerenciarDoencas = renderUI({
         
         HTML('<center><h4>Escolha um arquivo para comecar</h4></center>')
         
@@ -73,12 +81,39 @@ gerenciarDoencasServer = function(input, output, session) {
     
   })
   
+  #=======================Evento botao atualizar======================
+  observeEvent(input$btnatualizarDadosDoencas, {
+    
+    if(!is.null(dadosUploadDoencas())){
+      
+      if(inserirDadosGerenciarDoencas(dadosUploadDoencas())){
+        
+        shinyalert(
+          title = 'Sucesso',
+          text = 'Dados atualizados com sucesso',
+          type = "success"
+        )
+        
+      } else {
+        
+        shinyalert(
+          title = 'Erro',
+          text = 'Erro ao atualizar os dados',
+          type = "error"
+        )
+        
+      }
+      
+    }
+    
+  })
+  
   #===================================================================
   
   #=======================Escrevendo tabela===========================
   
-  output$tabelaUsuario = renderDataTable({
-    datatable(globalData(),options = list(scrollY = '500px'))
+  output$tabelaDoencasUpload = renderDataTable({
+    datatable(dadosUploadDoencas(),options = list(scrollY = '500px'))
   })
   
   #===================================================================

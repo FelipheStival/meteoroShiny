@@ -330,6 +330,11 @@ doencas.sidebar = function() {
         choices = "Todos",
         multiple = T,
         selectize = T
+      ),
+      selectInput(
+        inputId = "categoriaInputDoencas",
+        label = "Selecione a categoria: ",
+        choices = "Todos"
       )
     )
   )
@@ -338,39 +343,51 @@ doencas.sidebar = function() {
 
 # Pagina doencas
 experimentosUI = div(id = "clima-container",
-                dashboardPage(
-                  #========================header=========================
-                  
-                  dashboardHeader(title =  "Experimentos",
-                                  tags$li(
-                                    class = "dropdown",
-                                    actionLink(
-                                      inputId = "btnRetonarExperimentos",
-                                      label = "Voltar",
-                                      icon = icon("sign-out"),
-                                      style = "font-size: 1.5em;"
-                                    )
-                                  )),
-                  
-                  #=======================================================
-                  
-                  #=======================SiderBar========================
-                  
-                  dashboardSidebar(width = 260,
-                                   sidebarMenu(doencas.sidebar())),
-                  #========================================================
-                  
-                  #=======================body=============================
-                  dashboardBody(
-                    tabItems(
-                      tabItem.diagnostico(),
-                      tabItem.dadosPerdidos(),
-                      tabItem.analiseEstatistica(),
-                      tabItem.graficoLinhas(),
-                      tabItem.analiseGGE(),
-                      tabItem.graficoHeatMap(),
-                      tabItem.potencialGenotipo()
-                    )
-                  )
-                  #========================================================
-                ))
+                     
+                     #====== fab button  =====
+                     fab_button(
+                       actionButton(
+                         inputId = "btnAtualizarDadosExperimentos",
+                         label = "Atualizar dados",
+                         icon = icon("upload")
+                       ),
+                       inputId = "fab"
+                     ),
+                     #====== fim do botao  =====     
+                     
+                     dashboardPage(
+                       #========================header=========================
+                       
+                       dashboardHeader(title =  "Experimentos",
+                                       tags$li(
+                                         class = "dropdown",
+                                         actionLink(
+                                           inputId = "btnRetonarExperimentos",
+                                           label = "Voltar",
+                                           icon = icon("sign-out"),
+                                           style = "font-size: 1.5em;"
+                                         )
+                                       )),
+                       
+                       #=======================================================
+                       
+                       #=======================SiderBar========================
+                       
+                       dashboardSidebar(width = 260,
+                                        sidebarMenu(doencas.sidebar())),
+                       #========================================================
+                       
+                       #=======================body=============================
+                       dashboardBody(
+                         tabItems(
+                           tabItem.diagnostico(),
+                           tabItem.dadosPerdidos(),
+                           tabItem.analiseEstatistica(),
+                           tabItem.graficoLinhas(),
+                           tabItem.analiseGGE(),
+                           tabItem.graficoHeatMap(),
+                           tabItem.potencialGenotipo()
+                         )
+                       )
+                       #========================================================
+                     ))

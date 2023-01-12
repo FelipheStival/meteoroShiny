@@ -6,6 +6,11 @@ experimentoServer = function(input, output, session) {
                change_page('/')
   )
   
+  # Botao gerenciar
+  observeEvent(input$btnAtualizarDadosExperimentos,
+               change_page('/gerenciarExperimentos')
+  )
+  
   # dados doenca input service
   dadosEnsaios = reactive({
     dados = experimentos.provider.dados()
@@ -45,6 +50,16 @@ experimentoServer = function(input, output, session) {
   })
   
   # Dados potencial pro
+  
+  observe({
+    categorias = experimentos.provider.unique(dadosEnsaios(), 'categoria')
+    updateSelectInput(
+      session = session,
+      inputId = "categoriaInputDoencas",
+      choices = categorias,
+      selected = categorias[1]
+    )
+  })
   
   # Atualizando input cultura
   observe({

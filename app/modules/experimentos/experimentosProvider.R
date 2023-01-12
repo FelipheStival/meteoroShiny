@@ -21,14 +21,17 @@ experimentos.provider.dados = function() {
 	   cultura.nome as cultura,
 	   locais.nome as local,
 	   irrigacao,
-	   fungicida
+	   fungicida,
+	   categoria.nome as categoria
+	   
 	FROM public.ensaios
 	JOIN genotipos ON ensaios.id_genotipo = genotipos.id
 	JOIN locais ON ensaios.id_local = locais.id
 	JOIN cidades ON locais.id_cidade = cidades.id
 	JOIN estados ON cidades.id_estado = estados.id
 	JOIN tipos_de_graos ON genotipos.id_tipo_grao = tipos_de_graos.id
-	JOIN cultura ON ensaios.id_cultura = cultura.id"
+	JOIN cultura ON ensaios.id_cultura = cultura.id
+  JOIN categoria on categoria.id = ensaios.categoria_id "
   
   dados = banco.provider.executeQuery(statement, DOENCA_DB_DATABASE)
   return(dados)
@@ -58,7 +61,7 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
   indexTipoGrao = which(input[['tipodegraoInputDoencas']] == "Todos")
   indexEpoca = which(input[['epocaInputDoencas']] == "Todos")
   indexSafra = which(input[['safraInputDoencas']] == "Todos")
-  
+  indexCategoria =  which(input[['categoriaInputDoencas']] == "Todos")
   
   # Filtrando cultura
   if(length(indexCultura) == 0 & !is.null(input$culturaInputDoencas)){
@@ -85,9 +88,15 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
     filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas, ]
   } 
   
+  # Filtrando categoria
+  if(length(indexSafra) == 0 & !is.null(input$safraInputDoencas)){
+    filtrado = filtrado[filtrado$safra %in% input$safraInputDoencas, ]
+  } 
+  
   # Filtrando irrigacao e fungicida
   filtrado = filtrado[filtrado$irrigacao %in% input$irrigacaoInputDoencas &
                       filtrado$fungicida %in% input$fungicidaInputDoencas &
+                      filtrado$categoria %in% input$categoriaInputDoencas &
                       filtrado$cultura   %in% input$culturaInputDoencas, ]
   
   return(filtrado)

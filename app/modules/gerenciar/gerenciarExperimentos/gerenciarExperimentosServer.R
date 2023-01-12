@@ -3,18 +3,21 @@ gerenciarExperimentosServer = function(input, output, session) {
   
   #===================entrada de dados===================
   
-  dadosUpload = reactive({
+  dadosUploadExperimentos = reactive({
     
     dados = NULL
     
-    if(!is.null(input$arquivo)){
-      dados = read.table(input$arquivo$datapath,
-                         header = input$header,
-                         sep = input$sep,
+    if(!is.null(input$arquivoExperimentos)){
+      
+      dados = read.table(input$arquivoExperimentos$datapath,
+                         header = input$cabecalhoExperimentos,
+                         sep = input$separadorExperimentos,
                          stringsAsFactors = F)
+      
     }
     
     return(dados)
+    
   }) 
   
   #=======================================================
@@ -23,10 +26,16 @@ gerenciarExperimentosServer = function(input, output, session) {
   
   observe({
     
-    if(!is.null(dadosUpload())){
+    # Botao retornar
+    observeEvent(input$btnRetonarGerenciarExperimentos,
+                 change_page('/')
+    )
+    
+    
+    if(!is.null(dadosUploadExperimentos())){
       
       #Verificando separador
-      if(ncol(dadosUpload()) <= 1){
+      if(ncol(dadosUploadExperimentos()) <= 1){
         
         shinyalert(
           title = 'Erro separador',
@@ -39,23 +48,22 @@ gerenciarExperimentosServer = function(input, output, session) {
       {
         
         #Verificando colunas PROD e parental
-        if(!verificarColunas(dadosUpload())){
+        if(!verificarColunasGerenciarExperimentos(dadosUploadExperimentos())){
           
           shinyalert(
             title = 'Colunas obrigatorias',
             text = 'A tabela deve conter as colunas PARENTAL E PROD',
             type = "error"
           )
-        }
-        
-        #Verificando se existe NA na tabela
-        if(verificarColunas(dadosUpload()) & !VerificarNAColunas(dadosUpload())){
           
-          shinyalert(
-            title = 'Valores nulos',
-            text = 'A tabela possui valores nulos',
-            type = "error"
-          )
+        } else {
+          
+          #Visualizacao tabela
+          output$UItabelaGerenciarExperimentos = renderUI({
+            
+            dataTableOutput("tabelaExperimentosUpload")
+            
+          })
           
         }
         
@@ -73,12 +81,39 @@ gerenciarExperimentosServer = function(input, output, session) {
     
   })
   
+  #=======================Evento botao atualizar======================
+  observeEvent(input$btnatualizarDadosExperimentos, {
+    
+    if(!is.null(dadosUploadExperimentos())){
+      
+      if(inserirDadosExperimentos(dadosUploadExperimentos())){
+        
+        shinyalert(
+          title = 'Sucesso',
+          text = 'Dados atualizados com sucesso',
+          type = "success"
+        )
+        
+      } else {
+        
+        shinyalert(
+          title = 'Erro',
+          text = 'Erro ao atualizar os dados',
+          type = "error"
+        )
+        
+      }
+      
+    }
+    
+  })
+  
   #===================================================================
   
   #=======================Escrevendo tabela===========================
   
-  output$tabelaUsuario = renderDataTable({
-    datatable(globalData(),options = list(scrollY = '500px'))
+  output$tabelaExperimentosUpload = renderDataTable({
+    datatable(dadosUploadExperimentos(),options = list(scrollY = '500px'))
   })
   
   #===================================================================
