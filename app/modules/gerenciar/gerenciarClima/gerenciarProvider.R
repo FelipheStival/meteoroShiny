@@ -3,7 +3,6 @@
 #================================================================
 inserirDadosClima = function(novosDados){
   
-  browser()
   # Abrindo conexao
   conn = banco.provider.openConnection(DB_DATABASE)
   
