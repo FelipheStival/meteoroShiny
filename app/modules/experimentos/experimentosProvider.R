@@ -22,7 +22,7 @@ experimentos.provider.dados = function() {
 	   locais.nome as local,
 	   irrigacao,
 	   fungicida,
-	   categoria.nome as categoria
+	   cultura.nome as cultura
 	   
 	FROM public.ensaios
 	JOIN genotipos ON ensaios.id_genotipo = genotipos.id
@@ -30,8 +30,7 @@ experimentos.provider.dados = function() {
 	JOIN cidades ON locais.id_cidade = cidades.id
 	JOIN estados ON cidades.id_estado = estados.id
 	JOIN tipos_de_graos ON genotipos.id_tipo_grao = tipos_de_graos.id
-	JOIN cultura ON ensaios.id_cultura = cultura.id
-  JOIN categoria on categoria.id = ensaios.categoria_id "
+	JOIN cultura ON ensaios.id_cultura = cultura.id"
   
   dados = banco.provider.executeQuery(statement, DOENCA_DB_DATABASE)
   return(dados)
@@ -95,9 +94,8 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
   
   # Filtrando irrigacao e fungicida
   filtrado = filtrado[filtrado$irrigacao %in% input$irrigacaoInputDoencas &
-                      filtrado$fungicida %in% input$fungicidaInputDoencas &
-                      filtrado$categoria %in% input$categoriaInputDoencas &
-                      filtrado$cultura   %in% input$culturaInputDoencas, ]
+                      filtrado$fungicida %in% input$fungicidaInputDoencas,
+                      ]
   
   return(filtrado)
 }

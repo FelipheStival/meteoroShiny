@@ -8,8 +8,8 @@
 
 #container
 {
-  width: 70%;
-	height: 70%;
+  width: 65%;
+	height: 95%;
 	position: relative;
 	top:0;
 	bottom: 0;
@@ -42,7 +42,7 @@
 }
 .menu-item-icon
 {
-  width: 20%;
+  width: 17%;
   height: 40%;
   border-radius: 50px;
 }
@@ -72,6 +72,10 @@
 #opcao-agricultor
 {
   background-color: #3CB371;
+}
+
+#opcao-gerenciar{
+  background-color: #2F4F4F;
 }
 
 @keyframes animacaoBotao {

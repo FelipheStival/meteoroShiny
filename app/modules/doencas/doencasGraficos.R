@@ -1,7 +1,6 @@
 # Grafico local
 gerador_graficos = function(banco, filtroSafra){
   
-  
   agrupados = banco[[1]]
   fs_modelo = banco[[2]]
   fo_modelo = banco[[3]]

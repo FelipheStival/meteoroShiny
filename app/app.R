@@ -1,4 +1,3 @@
-
 #==============================================#
 # Carregando pacotes a serem utilizados
 app.LoadPackages = function()
@@ -43,9 +42,12 @@ app.LoadPackages = function()
     require(cluster)
     require(fdm2id)
     require(cowplot)
+    require(shinybusy)
   
     #==============================================#
 }
+
+options(shiny.autoreload = TRUE)
 
 #==============================================#
 # Carregando labels pagina login

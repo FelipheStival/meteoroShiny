@@ -20,6 +20,9 @@ menuItem.onclick = function(e){
   case 'Agricultor':
     window.location.href = "/Agricultor/";
     break;
+  case 'Gerenciar':
+    window.location.href = href + "gerenciar"
+    break;
   default:
     console.log('Não escolheu nenhum');
   }

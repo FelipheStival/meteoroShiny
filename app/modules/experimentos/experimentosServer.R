@@ -52,12 +52,12 @@ experimentoServer = function(input, output, session) {
   # Dados potencial pro
   
   observe({
-    categorias = experimentos.provider.unique(dadosEnsaios(), 'categoria')
+    cultura = experimentos.provider.unique(dadosEnsaios(), 'cultura')
     updateSelectInput(
       session = session,
       inputId = "categoriaInputDoencas",
-      choices = categorias,
-      selected = categorias[1]
+      choices = cultura,
+      selected = cultura[1]
     )
   })
   

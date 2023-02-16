@@ -3,10 +3,11 @@ router = make_router(
   route("/", bemVindoUI()),
   route("clima", climaUI),
   route("experimentos", experimentosUI),
-  route("gerenciarClima", gerenciarUI()),
-  route("gerenciarExperimentos", gerenciarExperimentosUI()),
-  route('gerenciarDoencas', gerenciarDoencasUI()),
-  route("doencas", doencasUI)
+  #route("gerenciarClima", gerenciarUI()),
+  #route("gerenciarExperimentos", gerenciarExperimentosUI()),
+  #route('gerenciarDoencas', gerenciarDoencasUI()),
+  route("doencas", doencasUI),
+  route("gerenciar", gerenciarUI())
 )
 
 # Pagina reponsavel pelo redirecionamento.

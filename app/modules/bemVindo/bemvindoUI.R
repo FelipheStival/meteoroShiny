@@ -32,6 +32,12 @@ bemVindoUI = function() {
               </div>
               <h7>Agricultor</h7>
             </div>
+            <div class = 'menu-item' id = 'opcao-gerenciar'>
+              <div class = 'menu-item-icon'>
+                <img src='icons//cogwheel.png' alt='Icone clima'>
+              </div>
+              <h7>Gerenciar</h7>
+            </div>
          </div>
     </div>"
     ),

@@ -330,11 +330,6 @@ doencas.sidebar = function() {
         choices = "Todos",
         multiple = T,
         selectize = T
-      ),
-      selectInput(
-        inputId = "categoriaInputDoencas",
-        label = "Selecione a categoria: ",
-        choices = "Todos"
       )
     )
   )
