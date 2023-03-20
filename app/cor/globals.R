@@ -7,8 +7,8 @@ DB_HOST = "localhost"
 DB_PORT = "5432"
 DB_DATABASE = "meteoro"
 DOENCA_DB_DATABASE = "ensaios"
-DB_USERNAME = "METEORO"
-DB_PASSWORD = "METEORO"
+DB_USERNAME = "meteoro"
+DB_PASSWORD = "meteoro"
 DB_DRIVER = "PostgreSQL"
 
 # Acesso

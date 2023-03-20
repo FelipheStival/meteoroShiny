@@ -43,11 +43,10 @@ app.LoadPackages = function()
     require(fdm2id)
     require(cowplot)
     require(shinybusy)
+    require(flexclust)
   
     #==============================================#
 }
-
-options(shiny.autoreload = TRUE)
 
 #==============================================#
 # Carregando labels pagina login

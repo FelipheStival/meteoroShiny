@@ -2,6 +2,7 @@
 # Metodo para obter os dados das doencas
 #================================================
 getDadosDoencasProvider = function(){
+  
   sql = 'select distinct
           	  lo.NOME as local,
               ci.NOME as cidade,
@@ -12,13 +13,13 @@ getDadosDoencasProvider = function(){
               ti.SIGLA as tipo_de_grao,
               en.REPETICAO as repeticao,
               en.DATA_SEMEADURA as data_semeadura,
-              gd.VALOR_FS as valor_FS,
-          	  gd.VALOR_FO as valor_FO,
+              gd.FS as valor_FS,
+          	  gd.FO as valor_FO,
               en.SAFRA as safra,
               en.ID_ENSAIO as id_ensaio
           from
-          	GENOTIPOS_DOENCAS gd
-          	JOIN ENSAIOS en on en.ID_GENOTIPO = gd.ID_GENOTIPO
+          	ensaios_doencas gd
+          	JOIN ENSAIOS en on en.ID = gd.ID_ENSAIO
           	JOIN genotipos ge on ge.ID = en.ID_GENOTIPO
           	JOIN locais lo on lo.ID = en.ID_LOCAL
           	JOIN cidades ci on ci.ID = lo.ID_CIDADE
@@ -70,11 +71,3 @@ getDadosDoencasProvider = function(){
   return(list)
   
 }
-
-funcaoAgregacao = function(x){
-  if(x){
-    return(x)
-  }
-  return(NA)
-}
-

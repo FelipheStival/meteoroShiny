@@ -126,14 +126,14 @@ gera_tabela_por_trial <- function(data, lme_model, col_cat, random_cat){
     
     data_up <- data %>% filter(id_ensaio == trial)
     ran_vec <- data_up %>% pull(random_cat)
+    localExperimento <- unique(data_up$local)
+    cidadeExperimento <- unique(data_up$cidade)
+    ufExperimento <- unique(data_up$estado)
+    mediaProducao <- median(data_up$produtividade)
+      
     
     if(length(unique(cat_vec))>1 & length(unique(ran_vec)) < nrow(data_up)){
       lme_model <- update(lme_model, data = data_up)
-      
-      localExperimento <- unique(data_up$local)
-      cidadeExperimento <- unique(data_up$cidade)
-      ufExperimento <- unique(data_up$estado)
-      mediaProducao <- median(data_up$produtividade)
       
       
       tab_results <- rbind(tab_results,
@@ -149,6 +149,7 @@ gera_tabela_por_trial <- function(data, lme_model, col_cat, random_cat){
     }
     
      if(length(unique(cat_vec)) == 1 | length(unique(ran_vec)) == nrow(data_up)){
+       
        tab_results <- rbind(tab_results,
                             tibble(id_ensaio = trial, 
                                    MediaPonderada = NA,

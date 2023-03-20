@@ -293,7 +293,7 @@ doencas.sidebar = function() {
       selectizeInput(
         inputId = "safraInputDoencas",
         label = "Selecione a safra:",
-        choices = "12/13",
+        choices = "15/16",
         options = list(maxItems = 1)
       ),
       selectInput(

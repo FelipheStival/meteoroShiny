@@ -2,6 +2,7 @@
 # Metodo para obter os dados dos genotipos
 #================================================
 experimentos.provider.dados = function() {
+  
   statement = "SELECT ensaios.id,
      id_ensaio,
 	   estados.nome as estado,
@@ -11,13 +12,12 @@ experimentos.provider.dados = function() {
 	   genotipos.nome as genotipo,
 	   safra,
 	   repeticao,
-	   ROUND(produtividade,2) as produtividade,
+	   produtividade as produtividade,
 	   data_semeadura,
 	   data_emergencia,
 	   data_inicio_floracao,
 	   data_inicio_ponto_colheita,
 	   data_inicio_colheita,
-	   epoca,
 	   cultura.nome as cultura,
 	   locais.nome as local,
 	   irrigacao,
@@ -33,6 +33,24 @@ experimentos.provider.dados = function() {
 	JOIN cultura ON ensaios.id_cultura = cultura.id"
   
   dados = banco.provider.executeQuery(statement, DOENCA_DB_DATABASE)
+  
+  dados[dados$irrigacao == 't', 'irrigacao'] = 'sim'
+  dados[dados$irrigacao == 'f', 'irrigacao'] = 'nao'
+  
+  dados[dados$fungicida == 't', 'fungicida'] = 'com'
+  dados[dados$fungicida == 'f', 'fungicida'] = 'sem'
+  
+  # Recriando ID ensaio para analises
+  dados$id_ensaio = paste(
+    dados$cidade,
+    dados$local,
+    dados$safra,
+    month(dados$data_semeadura),
+    dados$irrigacao,
+    dados$fungicida,
+    sep = '_'
+  )
+  
   return(dados)
 }
 
@@ -93,9 +111,6 @@ experimentos.provider.dadosFiltrados = function(dados, input) {
   } 
   
   # Filtrando irrigacao e fungicida
-  filtrado = filtrado[filtrado$irrigacao %in% input$irrigacaoInputDoencas &
-                      filtrado$fungicida %in% input$fungicidaInputDoencas,
-                      ]
   
   return(filtrado)
 }
@@ -187,12 +202,11 @@ TE1 = function(df, y, rep, gen, trials, accuracy) {
 service.getDiagostico = function(tabela, inputUsuario) {
   
   # Obtendo dados necessarios para gerar modelo
-  dadosModelo = tabela[,c("id_ensaio", "genotipo", "repeticao", "safra", "cidade", "local", "irrigacao","fungicida","estado","tipo_de_grao", "epoca", "produtividade", "cidade")]
+  dadosModelo = tabela[,c("id_ensaio", "genotipo", "repeticao", "safra", "cidade", "local", "irrigacao","fungicida","estado","tipo_de_grao", "produtividade", "cidade")]
   dadosModelo = na.exclude(dadosModelo)
   
   # Preparando dados
   dadosModelo$repeticao = as.character(dadosModelo$repeticao)
-  dadosModelo$epoca = as.factor(dadosModelo$epoca)
   dadosModelo$genotipo = as.factor(dadosModelo$genotipo)
   dadosModelo$local = as.factor(dadosModelo$local)
   
@@ -510,6 +524,7 @@ model.GGE = function(tabela) {
 model.Values = function(tabela) {
   tryCatch(
     expr = {
+      
       # modelo de efeito fixo
       fixed = dlply(tabela, .(id_ensaio), function(x)
         lm(produtividade ~ genotipo, x))

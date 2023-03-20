@@ -1,5 +1,6 @@
 #==============================================#
 # Grafico "Contagem"
+#==============================================#
 grafico.diagnostico_Contagem = function(tabela) {
   validate.vx = is.na(tabela$h2) | is.infinite(tabela$h2)
   validate.vy = is.na(tabela$rgg) | is.infinite(tabela$rgg)
@@ -22,11 +23,12 @@ grafico.diagnostico_Contagem = function(tabela) {
     ylim = c(0, 1)
   )
 }
-#==============================================#
 
 #==============================================#
 # Aba "Dados Perdidos"
+#===============================================
 graphics.dadosPerdidos_Estatistica = function(tabela) {
+  
   namesIndex = which(
     names(tabela) %in% c(
       "id_ensaio",
@@ -52,9 +54,11 @@ graphics.dadosPerdidos_Estatistica = function(tabela) {
     scale_fill_gradient(low = "#7cb342", high = "#e53935") + theme_minimal() +
     theme(text = element_text(size = 15))
 }
+
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Resumo"
+#===============================================
 grafico.analiseEstatistica_Resumo = function(tabela, mediaSelect = 'TODOS') {
   
   modified_data <- tabela %>% 
@@ -171,6 +175,7 @@ grafico.GraficoLinhas = function(dados) {
 #==============================================#
 # Aba "Estatistica"
 # Grafico "Linhas"
+#==============================================
 grafico.analiseCluster = function(data_plot, mediaSelect = 'TODOS'){
   
   # Clusters
@@ -266,6 +271,7 @@ grafico.analiseCluster = function(data_plot, mediaSelect = 'TODOS'){
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Quem vence e aonde"
+#==============================================
 grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
   plot = WhichWon(gge.model, largeSize = 3, axis_expand = 1.75) + theme_bw()
   label_plot <- plot[["data"]][["label"]]
@@ -288,6 +294,7 @@ grafico.analiseGGE_QuemVenceEAonde = function(gge.model) {
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Ordem de Ambiente"
+#==============================================
 grafico.analiseGGE_OrdemDeAmbiente = function(gge.model) {
   plot = RankEnv(gge.model, largeSize = 4, axis_expand = 1.75) + theme_bw()
   return(plot)
@@ -296,6 +303,7 @@ grafico.analiseGGE_OrdemDeAmbiente = function(gge.model) {
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Ordem de genotipo"
+#===============================================
 grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
   plot = RankGen(gge.model,largeSize = 4, axis_expand = 1.6) + theme_bw()
   
@@ -317,6 +325,7 @@ grafico.analiseGGE_OrdemDeGenotipo = function(gge.model) {
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Relacao entre ambientes"
+#==============================================
 grafico.analiseGGE_RelacaoEntreAmbientes = function(gge.model) {
   EnvRelationship(gge.model, largeSize = 4, axis_expand = 1.75) + theme_bw()
 }
@@ -325,6 +334,7 @@ grafico.analiseGGE_RelacaoEntreAmbientes = function(gge.model) {
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Estabilidade / Media"
+#==============================================
 grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
   plot = MeanStability(gge.model, largeSize = 4, axis_expand = 1.75) + theme_bw()
   
@@ -347,6 +357,7 @@ grafico.analiseGGE_EstabilidadeMedia = function(gge.model) {
 #==============================================#
 # Aba "Analise GGE"
 # Grafico "Denograma"
+#==============================================
 grafico.analiseGGE_Denograma = function(deno) {
   plot(as.phylo(deno), cex = 0.7, label.offset = 0.7, width = 10)
 }
@@ -355,6 +366,7 @@ grafico.analiseGGE_Denograma = function(deno) {
 #==============================================#
 # Aba "Potencial genótipo produtivo"
 # Grafico "Potencial Produtivo"
+#==============================================
 grafico.pontecialProdutivo = function(dados, localInput) {
   
   plot = ggplot(dados %>% filter(local == localInput), aes(x = genotipo, y = notas, fill = notas, label = round(notas,1))) +

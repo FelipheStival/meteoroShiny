@@ -79,7 +79,7 @@ experimentoServer = function(input, output, session) {
       session = session,
       inputId = "safraInputDoencas",
       choices = safras,
-      selected = "12/13"
+      selected = "15/16"
     ) 
   })
   
@@ -112,17 +112,6 @@ experimentoServer = function(input, output, session) {
       session = session,
       inputId = "tipodegraoInputDoencas",
       choices = c("Todos", tipoGraos),
-      selected = "Todos"
-    ) 
-  })
-  
-  # Atualizando input epoca
-  observe({
-    epocas =  experimentos.provider.unique(dadosEnsaios(), 'epoca')
-    updateSelectInput(
-      session = session,
-      inputId = "epocaInputDoencas",
-      choices = c("Todos", epocas),
       selected = "Todos"
     ) 
   })
@@ -198,7 +187,6 @@ experimentoServer = function(input, output, session) {
     )
     
     #====================================#
-    
     graphics.dadosPerdidos_Estatistica(dadosFiltrados())
     
   })
